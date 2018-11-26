@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">TikTokTool</string>
+    <string name="accessibility_service_description">抖音引流脚本</string>
+    <string name="begin">开始执行</string>
+    <string name="open_permission">打开悬浮窗权限</string>
+    <string name="open_servcie">打开服务</string>
+    <string name="service_status">服务状态：</string>
+    <string name="permission_status">悬浮窗权限状态：</string>
+    <string name="open_tiktok">启动</string>
+    <string name="attention">关注</string>
+    <string name="privately">私信</string>
+    <string name="function">功能：</string>
+    <string name="privately_content">私信内容：</string>
+    <string name="attention_speed">关注速度：</string>
+</resources>
