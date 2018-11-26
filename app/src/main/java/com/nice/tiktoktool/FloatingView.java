@@ -46,7 +46,7 @@ public class FloatingView extends FrameLayout implements View.OnTouchListener, V
         mParams.y = 100;
         //总是出现在应用程序窗口之上
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//6.0
-            mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         } else {
             mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         }

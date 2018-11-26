@@ -16,8 +16,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.*;
+
 import com.nice.config.Config;
 import com.nice.service.MyService;
+import com.nice.utils.JumpPermissionManagement;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -32,6 +34,22 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     private LinearLayout attentionSetting, privatelySetting;
     private EditText privatelyContent;
     private SeekBar attentionSpeedSb;
+
+    /**
+     * Build.MANUFACTURER
+     */
+    private static final String MANUFACTURER_HUAWEI = "Huawei";//华为
+    private static final String MANUFACTURER_MEIZU = "Meizu";//魅族
+    private static final String MANUFACTURER_XIAOMI = "Xiaomi";//小米
+    private static final String MANUFACTURER_SONY = "Sony";//索尼
+    private static final String MANUFACTURER_OPPO = "OPPO";
+    private static final String MANUFACTURER_LG = "LG";
+    private static final String MANUFACTURER_VIVO = "vivo";
+    private static final String MANUFACTURER_SAMSUNG = "samsung";//三星
+    private static final String MANUFACTURER_LETV = "Letv";//乐视
+    private static final String MANUFACTURER_ZTE = "ZTE";//中兴
+    private static final String MANUFACTURER_YULONG = "YuLong";//酷派
+    private static final String MANUFACTURER_LENOVO = "LENOVO";//联想
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,9 +168,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         }
         if (compoundButton.getId() == R.id.open_permission_btn) {
             if (b) {
-                Toast.makeText(MainActivity.this, "请授权应用[允许出现在其他应用上]权限！", Toast.LENGTH_SHORT).show();
-                openSetting();
-            } else {
                 openSetting();
             }
         }
@@ -169,24 +184,46 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     }
 
     /**
+     * 打开应用设置
+     */
+
+    public void openAppSetting() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, 11);
+        Log.e("", "启动悬浮窗界面");
+    }
+
+    /**
      * 打开权限设置界面
      */
     public void openSetting() {
         try {
-            Intent localIntent = new Intent(
-                    "miui.intent.action.APP_PERM_EDITOR");
-            localIntent.setClassName("com.miui.securitycenter",
-                    "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
-            localIntent.putExtra("extra_pkgname", getPackageName());
-            startActivityForResult(localIntent, 11);
-            Log.e("", "启动小米悬浮窗设置界面");
-        } catch (ActivityNotFoundException localActivityNotFoundException) {
-            Intent intent1 = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", getPackageName(), null);
-            intent1.setData(uri);
-            startActivityForResult(intent1, 11);
-            Log.e("", "启动悬浮窗界面");
+            if (JumpPermissionManagement.gotoPermissionSetting(this)) {
+                openAppSetting();
+            } else {
+                Toast.makeText(MainActivity.this, "请授权应用[允许出现在其他应用上]权限！", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            openAppSetting();
         }
+
+//            try {
+//                Intent localIntent = new Intent(
+//                        "miui.intent.action.APP_PERM_EDITOR");
+//                localIntent.setClassName("com.miui.securitycenter",
+//                        "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
+//                localIntent.putExtra("extra_pkgname", getPackageName());
+//                startActivityForResult(localIntent, 11);
+//                Log.e("", "启动小米悬浮窗设置界面");
+//            } catch (ActivityNotFoundException localActivityNotFoundException) {
+//                Intent intent1 = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                Uri uri = Uri.fromParts("package", getPackageName(), null);
+//                intent1.setData(uri);
+//                startActivityForResult(intent1, 11);
+//                Log.e("", "启动悬浮窗界面");
+//            }
 
     }
 
