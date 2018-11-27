@@ -4,12 +4,15 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.*;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.system.Os;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,7 +22,10 @@ import android.widget.*;
 
 import com.nice.config.Config;
 import com.nice.service.MyService;
+import com.nice.utils.InstallationUtil;
 import com.nice.utils.JumpPermissionManagement;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -96,6 +102,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
         //显示对应的配置界面
         settingViewChange();
+
     }
 
 
@@ -293,6 +300,15 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     protected void onResume() {
         super.onResume();
         changeStatus();
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("InstallationCode", InstallationUtil.id(this));
+            jsonObject.put("deviceInfo", Build.MANUFACTURER + "-" + Build.DEVICE);
+            Toast.makeText(MainActivity.this, jsonObject.toString(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.HIDE));
     }
 
