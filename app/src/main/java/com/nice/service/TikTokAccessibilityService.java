@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
+
 import com.nice.config.Config;
 import com.nice.utils.PerformClickUtils;
 
@@ -254,6 +255,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
                                 toast("已私信" + privateLetterList.size() + "人");
                             }
                         }
+
+                        Thread.sleep(Config.getInstance(this).getPrivatelySpeed() + Math.round(2000 * Math.random()));
                     } catch (Exception e) {
                         e.printStackTrace();
                         break;

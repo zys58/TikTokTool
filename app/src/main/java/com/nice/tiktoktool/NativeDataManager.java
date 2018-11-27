@@ -21,11 +21,19 @@ public class NativeDataManager {
         mPreference.edit().putLong("attentionSpeed", speed).apply();
     }
 
-    public String getPrivatelyContent(){
+    public Long getPrivatelySpeed() {
+        return mPreference.getLong("privatelySpeed", 3000);
+    }
+
+    public void setPrivatelySpeed(Long privatelySpeed) {
+        mPreference.edit().putLong("privatelySpeed", privatelySpeed).apply();
+    }
+
+    public String getPrivatelyContent() {
         return mPreference.getString("privatelyContent", "测试");
     }
 
-    public void setPrivatelyContent(String privatelyContent){
+    public void setPrivatelyContent(String privatelyContent) {
         mPreference.edit().putString("privatelyContent", privatelyContent).apply();
     }
 

@@ -12,4 +12,6 @@
     <string name="function">功能：</string>
     <string name="privately_content">私信内容：</string>
     <string name="attention_speed">关注速度：</string>
+    <string name="set_user">用户设置</string>
+    <string name="privately_speed">私信速度：</string>
 </resources>

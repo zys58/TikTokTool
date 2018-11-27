@@ -24,6 +24,7 @@ import com.nice.config.Config;
 import com.nice.service.MyService;
 import com.nice.utils.InstallationUtil;
 import com.nice.utils.JumpPermissionManagement;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,11 +36,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
     private Switch openPermission, openServiceBtn;
     private Button openTiktokBtn;
-    private TextView attentionSpeedTv;
+    private TextView attentionSpeedTv, privatelySpeedTv;
     private RadioButton attentionRa, privatelyRa;
     private LinearLayout attentionSetting, privatelySetting;
     private EditText privatelyContent;
-    private SeekBar attentionSpeedSb;
+    private SeekBar attentionSpeedSb, privatelySpeedSb;
+    private ImageView usrSettingBtn;
 
 
     @Override
@@ -57,6 +59,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         privatelyContent = findViewById(R.id.privately_content);
         attentionSpeedTv = findViewById(R.id.attention_speed_tv);
         attentionSpeedSb = findViewById(R.id.attention_speed_sb);
+        usrSettingBtn = findViewById(R.id.usr_setting_btn);
+        privatelySpeedTv = findViewById(R.id.privately_speed_tv);
+        privatelySpeedSb = findViewById(R.id.privately_speed_sb);
 
         changeStatus();
         openServiceBtn.setOnCheckedChangeListener(this);
@@ -64,6 +69,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         attentionRa.setOnCheckedChangeListener(this);
         privatelyRa.setOnCheckedChangeListener(this);
         openTiktokBtn.setOnClickListener(this);
+        usrSettingBtn.setOnClickListener(this);
         attentionSpeedSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -80,6 +86,26 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Config.getInstance(MainActivity.this).setAttentionSpeed((long) seekBar.getProgress());
+            }
+        });
+
+        privatelySpeedSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                privatelySpeedTv.setText("(" + i + "~" + (i + 2) + "秒/个)");
+                if (i < 1) {
+                    privatelySpeedSb.setProgress(1);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Config.getInstance(MainActivity.this).setPrivatelySpeed((long) seekBar.getProgress());
             }
         });
 
@@ -118,6 +144,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             intent.setComponent(componentName);
             startActivity(intent);
         }
+
+        if (view.getId() == R.id.usr_setting_btn) {
+            Intent intent = new Intent(MainActivity.this, UserSettingActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void setPrivatelyContent() {
@@ -138,6 +169,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             //速度显示
             attentionSpeedTv.setText("(" + Config.getInstance(this).getAttentionSpeed() / 1000 + "~" + (Config.getInstance(this).getAttentionSpeed() / 1000 + 2) + "秒/个)");
             attentionSpeedSb.setProgress((int) (Config.getInstance(this).getAttentionSpeed() / 1000));
+            privatelySpeedTv.setText("(" + Config.getInstance(this).getPrivatelySpeed() / 1000 + "~" + (Config.getInstance(this).getPrivatelySpeed() / 1000 + 2) + "秒/个)");
+            privatelySpeedSb.setProgress((int) (Config.getInstance(this).getPrivatelySpeed() / 1000));
         } else {
             attentionSetting.setVisibility(View.GONE);
             privatelySetting.setVisibility(View.VISIBLE);
@@ -198,22 +231,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         } catch (Exception e) {
             openAppSetting();
         }
-
-//            try {
-//                Intent localIntent = new Intent(
-//                        "miui.intent.action.APP_PERM_EDITOR");
-//                localIntent.setClassName("com.miui.securitycenter",
-//                        "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
-//                localIntent.putExtra("extra_pkgname", getPackageName());
-//                startActivityForResult(localIntent, 11);
-//                Log.e("", "启动小米悬浮窗设置界面");
-//            } catch (ActivityNotFoundException localActivityNotFoundException) {
-//                Intent intent1 = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//                Uri uri = Uri.fromParts("package", getPackageName(), null);
-//                intent1.setData(uri);
-//                startActivityForResult(intent1, 11);
-//                Log.e("", "启动悬浮窗界面");
-//            }
 
     }
 

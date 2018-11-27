@@ -1,6 +1,7 @@
 package com.nice.config;
 
 import android.content.Context;
+
 import com.nice.tiktoktool.NativeDataManager;
 
 public class Config {
@@ -35,6 +36,14 @@ public class Config {
 
     public void setAttentionSpeed(Long attentionSpeed) {
         mNativeDataManager.setAttentionSpeed(attentionSpeed * 1000);
+    }
+
+    public Long getPrivatelySpeed() {
+        return mNativeDataManager.getPrivatelySpeed();
+    }
+
+    public void setPrivatelySpeed(Long privatelySpeed) {
+        mNativeDataManager.setPrivatelySpeed(privatelySpeed * 1000);
     }
 
     public boolean getStatus() {
