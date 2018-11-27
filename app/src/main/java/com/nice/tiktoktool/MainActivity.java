@@ -35,21 +35,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     private EditText privatelyContent;
     private SeekBar attentionSpeedSb;
 
-    /**
-     * Build.MANUFACTURER
-     */
-    private static final String MANUFACTURER_HUAWEI = "Huawei";//华为
-    private static final String MANUFACTURER_MEIZU = "Meizu";//魅族
-    private static final String MANUFACTURER_XIAOMI = "Xiaomi";//小米
-    private static final String MANUFACTURER_SONY = "Sony";//索尼
-    private static final String MANUFACTURER_OPPO = "OPPO";
-    private static final String MANUFACTURER_LG = "LG";
-    private static final String MANUFACTURER_VIVO = "vivo";
-    private static final String MANUFACTURER_SAMSUNG = "samsung";//三星
-    private static final String MANUFACTURER_LETV = "Letv";//乐视
-    private static final String MANUFACTURER_ZTE = "ZTE";//中兴
-    private static final String MANUFACTURER_YULONG = "YuLong";//酷派
-    private static final String MANUFACTURER_LENOVO = "LENOVO";//联想
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,8 +146,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         if (compoundButton.getId() == R.id.open_accessibility_btn) {
             if (b) {
                 Toast.makeText(MainActivity.this, "请打开[抖音引流脚本]辅助服务！", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-            } else {
                 startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
             }
         }
@@ -303,6 +286,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         } else {
             openPermission.setChecked(false);
         }
+
     }
 
     @Override

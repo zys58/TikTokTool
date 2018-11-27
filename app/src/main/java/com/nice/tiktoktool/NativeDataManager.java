@@ -1,4 +1,4 @@
-package com.nice.config;
+package com.nice.tiktoktool;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,6 +1,7 @@
 package com.nice.config;
 
 import android.content.Context;
+import com.nice.tiktoktool.NativeDataManager;
 
 public class Config {
 
