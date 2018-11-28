@@ -16,6 +16,7 @@ public class Config {
 
     private Boolean status;
     private Integer option;
+    private Boolean activated;
 
     private static NativeDataManager mNativeDataManager;
 
@@ -81,5 +82,13 @@ public class Config {
 
     public void setActivationCode(String activationCode) {
         mNativeDataManager.setActivationCode(activationCode);
+    }
+
+    public Boolean getActivated() {
+        return activated;
+    }
+
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
     }
 }

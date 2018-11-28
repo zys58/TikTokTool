@@ -177,8 +177,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                JsonObject json = new JsonParser().parse(response.body().string()).getAsJsonObject();
-                JsonObject data = new JsonParser().parse(AESUtils.decode(json.get("data").getAsString())).getAsJsonObject();
+                JsonObject encryptedData = new JsonParser().parse(response.body().string()).getAsJsonObject();
+                JsonObject data = new JsonParser().parse(AESUtils.decode(encryptedData.get("data").getAsString())).getAsJsonObject();
                 if (data.get("code").getAsInt() == 0) {
                     if (data.get("valid").getAsInt() == 1) {
                         Gson gson = new Gson();
