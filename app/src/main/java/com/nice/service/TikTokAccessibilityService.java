@@ -15,8 +15,8 @@ import java.util.List;
 
 public class TikTokAccessibilityService extends AccessibilityService {
 
-    private List<String> privateLetterList = new ArrayList<>();
-    private Integer attentionCount = 0;
+    public static List<String> privateLetterList = new ArrayList<>();
+    public static Integer attentionCount = 0;
     //操作状态  正在私信/关注
     public static Boolean privatelyLetter = false;
     public static Boolean attentionLetter = false;
@@ -116,7 +116,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
      */
     public synchronized void attention(List<AccessibilityNodeInfo> attentionBtns) {
 
-        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.CONCERN)) {
+        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.CONCERN) && !attentionBtns.isEmpty()) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -124,7 +124,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
             }
             for (AccessibilityNodeInfo concernBtn : attentionBtns) {
                 Log.i("执行操作：", "关注");
-                if (concernBtn.getText().toString().equals("关注") && Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.CONCERN)) {
+                if (concernBtn.getText().toString().equals("关注") && Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.CONCERN) && attentionCount <= 200) {
                     concernBtn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     attentionCount++;
                     toast("已关注" + attentionCount + "人");
@@ -146,121 +146,115 @@ public class TikTokAccessibilityService extends AccessibilityService {
      */
     public synchronized void privately(List<AccessibilityNodeInfo> privatelyViews) {
 
-        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.PRIVATELY)) {
+        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.PRIVATELY) && !privatelyViews.isEmpty()) {
             PerformClickUtils.findViewIdAndClick(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/a_7");
 
-            if (!privatelyViews.isEmpty()) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for (AccessibilityNodeInfo info : privatelyViews) {
                 try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.PRIVATELY) && !privateLetterList.contains(info.getText().toString())) {
 
-                for (AccessibilityNodeInfo info : privatelyViews) {
-                    try {
-                        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.PRIVATELY)) {
-                            //过滤已经私信过的
-                            if (!privateLetterList.contains(info.getText().toString())) {
+                        Thread.sleep(500);
 
-                                Thread.sleep(500);
-
-                                int count = 0;
-                                AccessibilityNodeInfo rootInActiveWindow;
-                                do {
-                                    Log.i("昵称：", info.getText().toString() + "--点击主页");
-                                    PerformClickUtils.performClick(info);
-                                    rootInActiveWindow = this.getRootInActiveWindow();
-                                    Thread.sleep(500);
-                                    count++;
-                                    if (count >= 5) {
-                                        break;
-                                    }
-                                }
-                                while (rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a9f").isEmpty() && Config.getInstance(this).getStatus());
-                                count = 0;
-                                do {
-                                    Log.i("昵称：", info.getText().toString() + "--进入私聊界面");
-                                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a9f");
-                                    rootInActiveWindow = this.getRootInActiveWindow();
-                                    Thread.sleep(500);
-                                    count++;
-                                    if (count >= 5) {
-                                        break;
-                                    }
-                                }
-                                while (rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/bcn").isEmpty() && Config.getInstance(this).getStatus());
-                                count = 0;
-
-                                //已经私信过的不操作
-                                while (rootInActiveWindow.findAccessibilityNodeInfosByText(Config.getInstance(this).getPrivatelyContent()).isEmpty() && Config.getInstance(this).getStatus()) {
-                                    Log.i("昵称：", info.getText().toString() + "--私信");
-                                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/bcn");
-                                    rootInActiveWindow = this.getRootInActiveWindow();
-                                    Thread.sleep(500);
-                                    count++;
-                                    if (count >= 5) {
-                                        break;
-                                    }
-
-                                    int sendCount = 0;
-                                    // 模拟粘贴
-                                    List<AccessibilityNodeInfo> bcn;
-                                    do {
-                                        Log.i("昵称：", info.getText().toString() + "--寻找输入框");
-                                        bcn = this.getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/bcn");
-                                        Thread.sleep(500);
-                                        sendCount++;
-                                        if (sendCount >= 5) {
-                                            break;
-                                        }
-                                    }
-                                    while (bcn.isEmpty() && Config.getInstance(this).getStatus());
-                                    Thread.sleep(500);
-
-                                    Log.i("昵称：", info.getText().toString() + "--发送私信");
-                                    bcn.get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
-
-                                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/i0");
-                                    Thread.sleep(500);
-                                }
-                                count = 0;
-
-                                do {
-                                    Log.i("昵称：", info.getText().toString() + "--返回主页");
-                                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/bcd");
-                                    rootInActiveWindow = this.getRootInActiveWindow();
-                                    Thread.sleep(500);
-                                    count++;
-                                    if (count >= 5) {
-                                        break;
-                                    }
-                                }
-                                while (rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a9f").size() == 0 && Config.getInstance(this).getStatus());
-                                count = 0;
-
-                                List<AccessibilityNodeInfo> byText;
-                                do {
-                                    Log.i("昵称：", info.getText().toString() + "--返回列表");
-                                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/k1");
-                                    Thread.sleep(2000);
-                                    byText = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/aaz");
-                                    count++;
-                                    if (count >= 5) {
-                                        break;
-                                    }
-                                }
-                                while (byText.size() == 0 && Config.getInstance(this).getStatus());
-                                //放入已私信列表
-                                privateLetterList.add(info.getText().toString());
-                                toast("已私信" + privateLetterList.size() + "人");
+                        int count = 0;
+                        AccessibilityNodeInfo rootInActiveWindow;
+                        do {
+                            Log.i("昵称：", info.getText().toString() + "--点击主页");
+                            PerformClickUtils.performClick(info);
+                            rootInActiveWindow = this.getRootInActiveWindow();
+                            Thread.sleep(500);
+                            count++;
+                            if (count >= 5) {
+                                break;
                             }
                         }
+                        while (rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a9f").isEmpty() && Config.getInstance(this).getStatus());
+                        count = 0;
+                        do {
+                            Log.i("昵称：", info.getText().toString() + "--进入私聊界面");
+                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a9f");
+                            rootInActiveWindow = this.getRootInActiveWindow();
+                            Thread.sleep(500);
+                            count++;
+                            if (count >= 5) {
+                                break;
+                            }
+                        }
+                        while (rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/bcn").isEmpty() && Config.getInstance(this).getStatus());
+                        count = 0;
 
-                        Thread.sleep(Config.getInstance(this).getPrivatelySpeed() + Math.round(2000 * Math.random()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        break;
+                        //已经私信过的不操作
+                        while (rootInActiveWindow.findAccessibilityNodeInfosByText(Config.getInstance(this).getPrivatelyContent()).isEmpty() && Config.getInstance(this).getStatus()) {
+                            Log.i("昵称：", info.getText().toString() + "--私信");
+                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/bcn");
+                            rootInActiveWindow = this.getRootInActiveWindow();
+                            Thread.sleep(500);
+                            count++;
+                            if (count >= 5) {
+                                break;
+                            }
+
+                            int sendCount = 0;
+                            // 模拟粘贴
+                            List<AccessibilityNodeInfo> bcn;
+                            do {
+                                Log.i("昵称：", info.getText().toString() + "--寻找输入框");
+                                bcn = this.getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/bcn");
+                                Thread.sleep(500);
+                                sendCount++;
+                                if (sendCount >= 5) {
+                                    break;
+                                }
+                            }
+                            while (bcn.isEmpty() && Config.getInstance(this).getStatus());
+                            Thread.sleep(500);
+
+                            Log.i("昵称：", info.getText().toString() + "--发送私信");
+                            bcn.get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
+
+                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/i0");
+                            Thread.sleep(500);
+                        }
+                        count = 0;
+
+                        do {
+                            Log.i("昵称：", info.getText().toString() + "--返回主页");
+                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/bcd");
+                            rootInActiveWindow = this.getRootInActiveWindow();
+                            Thread.sleep(500);
+                            count++;
+                            if (count >= 5) {
+                                break;
+                            }
+                        }
+                        while (rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a9f").size() == 0 && Config.getInstance(this).getStatus());
+                        count = 0;
+
+                        List<AccessibilityNodeInfo> byText;
+                        do {
+                            Log.i("昵称：", info.getText().toString() + "--返回列表");
+                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/k1");
+                            Thread.sleep(2000);
+                            byText = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/aaz");
+                            count++;
+                            if (count >= 5) {
+                                break;
+                            }
+                        }
+                        while (byText.size() == 0 && Config.getInstance(this).getStatus());
+                        //放入已私信列表
+                        privateLetterList.add(info.getText().toString());
+                        toast("已私信" + privateLetterList.size() + "人");
                     }
+                    Thread.sleep(Config.getInstance(this).getPrivatelySpeed() + Math.round(2000 * Math.random()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
                 }
             }
         }

@@ -42,6 +42,8 @@ public class FloatingView extends FrameLayout {
                     beginBtn.setText("开始执行");
                     TikTokAccessibilityService.attentionLetter = false;
                     Toast.makeText(getContext(), "停止执行...", Toast.LENGTH_SHORT).show();
+                    TikTokAccessibilityService.privateLetterList.clear();
+                    TikTokAccessibilityService.attentionCount = 0;
                 } else {
                     Config.getInstance(getContext()).setStatus(true);
                     beginBtn.setText("停止执行");

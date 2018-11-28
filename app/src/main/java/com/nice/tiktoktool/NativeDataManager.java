@@ -37,4 +37,11 @@ public class NativeDataManager {
         mPreference.edit().putString("privatelyContent", privatelyContent).apply();
     }
 
+    public String getActivationCode() {
+        return mPreference.getString("activationCode", "");
+    }
+
+    public void setActivationCode(String activationCode) {
+        mPreference.edit().putString("privatelyContent", activationCode).apply();
+    }
 }

@@ -2,12 +2,17 @@ package com.nice.config;
 
 import android.content.Context;
 
+import android.os.Build;
 import com.nice.tiktoktool.NativeDataManager;
 
 public class Config {
 
+    public static final String CODE_VALIDATE_URL = "http://192.168.10.135/auth/codeValidate";
+
     public static final Integer CONCERN = 1;
     public static final Integer PRIVATELY = 2;
+
+    public static final String DEVICE_INFO = Build.MANUFACTURER + "-" + Build.DEVICE;
 
     private Boolean status;
     private Integer option;
@@ -68,5 +73,13 @@ public class Config {
 
     public void setPrivatelyContent(String privatelyContent) {
         mNativeDataManager.setPrivatelyContent(privatelyContent);
+    }
+
+    public String getActivationCode() {
+        return mNativeDataManager.getActivationCode();
+    }
+
+    public void setActivationCode(String activationCode) {
+        mNativeDataManager.setActivationCode(activationCode);
     }
 }

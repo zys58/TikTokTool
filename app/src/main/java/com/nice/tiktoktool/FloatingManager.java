@@ -53,7 +53,6 @@ public class FloatingManager {
             mWindowManager.removeView(view);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return false;
     }

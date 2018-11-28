@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.*;
 import android.net.Uri;
@@ -20,14 +21,22 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.*;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.nice.config.Config;
+import com.nice.entity.ActivationCode;
 import com.nice.service.MyService;
+import com.nice.utils.AESUtils;
 import com.nice.utils.InstallationUtil;
 import com.nice.utils.JumpPermissionManagement;
 
+import okhttp3.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -128,7 +137,59 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
         //显示对应的配置界面
         settingViewChange();
+        //请求设备信息
+        requestDeviceInfo();
 
+    }
+
+    public void requestDeviceInfo() {
+        ProgressDialog.show(MainActivity.this, "资源加载中", "资源加载中,请稍后..."
+                , false, true);
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");//"类型,字节码"
+
+        JSONObject encryptedDataEntity = new JSONObject();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("activationCode", Config.getInstance(this).getActivationCode());
+            jsonObject.put("InstallationCode", InstallationUtil.id(this));
+            jsonObject.put("deviceInfo", Config.DEVICE_INFO);
+            encryptedDataEntity.put("data", AESUtils.encode(jsonObject.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //json字符串
+        String value = String.valueOf(encryptedDataEntity);
+        //1.创建OkHttpClient对象
+        OkHttpClient okHttpClient = new OkHttpClient();
+        //2.通过RequestBody.create 创建requestBody对象
+        RequestBody requestBody = RequestBody.create(mediaType, value);
+        //3.创建Request对象，设置URL地址，将RequestBody作为post方法的参数传入
+        Request request = new Request.Builder().url(Config.CODE_VALIDATE_URL).post(requestBody).build();
+        //4.创建一个call对象,参数就是Request请求对象
+        Call call = okHttpClient.newCall(request);
+        //5.请求加入调度,重写回调方法
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("异常返回：", e.getStackTrace().toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                JsonObject json = new JsonParser().parse(response.body().string()).getAsJsonObject();
+                JsonObject data = new JsonParser().parse(AESUtils.decode(json.get("data").getAsString())).getAsJsonObject();
+                if (data.get("code").getAsInt() == 0) {
+                    if (data.get("valid").getAsInt() == 1) {
+                        Gson gson = new Gson();
+                        ActivationCode activationCode = gson.fromJson(data.get("data").getAsString(), ActivationCode.class);
+                        Log.i("返回：", activationCode.getActivationCode());
+                    } else {
+                        Log.i("返回：", data.get("msg").getAsString());
+                    }
+                }
+            }
+        });
     }
 
 
@@ -317,15 +378,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     protected void onResume() {
         super.onResume();
         changeStatus();
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("InstallationCode", InstallationUtil.id(this));
-            jsonObject.put("deviceInfo", Build.MANUFACTURER + "-" + Build.DEVICE);
-            Toast.makeText(MainActivity.this, jsonObject.toString(), Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.HIDE));
     }
 
