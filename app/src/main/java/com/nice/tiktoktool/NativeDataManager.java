@@ -42,6 +42,14 @@ public class NativeDataManager {
     }
 
     public void setActivationCode(String activationCode) {
-        mPreference.edit().putString("privatelyContent", activationCode).apply();
+        mPreference.edit().putString("activationCode", activationCode).apply();
+    }
+
+    public String getEndTime() {
+        return mPreference.getString("endTime", "");
+    }
+
+    public void setEndTime(String activationCode) {
+        mPreference.edit().putString("endTime", activationCode).apply();
     }
 }

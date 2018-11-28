@@ -14,4 +14,6 @@
     <string name="attention_speed">关注速度：</string>
     <string name="set_user">用户设置</string>
     <string name="privately_speed">私信速度：</string>
+    <string name="activation_code">激活码：</string>
+    <string name="activation">激活</string>
 </resources>

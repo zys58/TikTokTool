@@ -52,18 +52,16 @@
                 android:text="软件激活状态：" />
 
             <TextView
+                android:id="@+id/activation_state_tv1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="●  "
-                android:textColor="@color/lawngreen" />
-            <!--android:textColor="#48d900"-->
+                android:text="●  " />
 
 
             <TextView
+                android:id="@+id/activation_state_tv2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="已激活"/>
-            <!--android:text="已激活"-->
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -223,9 +221,16 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="50dp"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:text="@string/open_tiktok"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/colorPrimaryDark"/>
+            android:textColor="@color/white" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
     </LinearLayout>
+
 </LinearLayout>

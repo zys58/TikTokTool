@@ -37,7 +37,6 @@ public class FloatingManager {
             mWindowManager.addView(view, params);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return false;
     }

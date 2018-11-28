@@ -7,15 +7,19 @@ import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.*;
+import android.graphics.Color;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.system.Os;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
@@ -33,6 +37,7 @@ import com.nice.utils.InstallationUtil;
 import com.nice.utils.JumpPermissionManagement;
 
 import okhttp3.*;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,13 +50,39 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
     private Switch openPermission, openServiceBtn;
     private Button openTiktokBtn;
-    private TextView attentionSpeedTv, privatelySpeedTv;
+    private TextView attentionSpeedTv, privatelySpeedTv, activationStateTv1, activationStateTv2;
     private RadioButton attentionRa, privatelyRa;
     private LinearLayout attentionSetting, privatelySetting;
     private EditText privatelyContent;
     private SeekBar attentionSpeedSb, privatelySpeedSb;
     private ImageView usrSettingBtn;
+    private ProgressBar progressBar;
 
+    /*构造一个Handler，主要作用有：1）供非UI线程发送Message  2）处理Message并完成UI更新*/
+    public Handler uiHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    progressBar.setVisibility(View.GONE);
+                    break;
+                case 1:
+                    activationStateTv1.setTextColor(Color.GREEN);
+                    activationStateTv2.setText("已激活");
+                    break;
+                case 2:
+                    Bundle bundle = msg.getData();
+                    Toast.makeText(getApplicationContext(), bundle.getString("msg"), Toast.LENGTH_LONG).show();
+                    activationStateTv1.setTextColor(Color.RED);
+                    activationStateTv2.setText("未激活");
+                    break;
+                default:
+                    break;
+
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +102,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         usrSettingBtn = findViewById(R.id.usr_setting_btn);
         privatelySpeedTv = findViewById(R.id.privately_speed_tv);
         privatelySpeedSb = findViewById(R.id.privately_speed_sb);
+        progressBar = findViewById(R.id.progress_bar);
+        activationStateTv1 = findViewById(R.id.activation_state_tv1);
+        activationStateTv2 = findViewById(R.id.activation_state_tv2);
 
         changeStatus();
         openServiceBtn.setOnCheckedChangeListener(this);
@@ -143,8 +177,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     }
 
     public void requestDeviceInfo() {
-        ProgressDialog.show(MainActivity.this, "资源加载中", "资源加载中,请稍后..."
-                , false, true);
+
+        progressBar.setVisibility(View.VISIBLE);
 
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");//"类型,字节码"
 
@@ -170,24 +204,67 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         Call call = okHttpClient.newCall(request);
         //5.请求加入调度,重写回调方法
         call.enqueue(new Callback() {
+
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i("异常返回：", e.getStackTrace().toString());
+                Log.i("异常返回：", "");
+                e.printStackTrace();
+                new Thread() {
+                    public void run() {
+                        uiHandler.sendEmptyMessage(0);
+                    }
+                }.start();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 JsonObject encryptedData = new JsonParser().parse(response.body().string()).getAsJsonObject();
-                JsonObject data = new JsonParser().parse(AESUtils.decode(encryptedData.get("data").getAsString())).getAsJsonObject();
+                final JsonObject data = new JsonParser().parse(AESUtils.decode(encryptedData.get("data").getAsString())).getAsJsonObject();
                 if (data.get("code").getAsInt() == 0) {
                     if (data.get("valid").getAsInt() == 1) {
-                        Gson gson = new Gson();
-                        ActivationCode activationCode = gson.fromJson(data.get("data").getAsString(), ActivationCode.class);
-                        Log.i("返回：", activationCode.getActivationCode());
+                        ActivationCode activationCode = new Gson().fromJson(data.getAsJsonObject("data"), ActivationCode.class);
+                        Config.getInstance(getApplicationContext()).setActivated(true);
+                        Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
+                        Config.getInstance(getApplicationContext()).setEndTime(DateUtils.formatDateTime(getApplicationContext(), activationCode.getEndTime(), DateUtils.FORMAT_SHOW_YEAR));
+                        new Thread() {
+                            public void run() {
+                                uiHandler.sendEmptyMessage(1);
+                            }
+                        }.start();
                     } else {
+                        new Thread() {
+                            public void run() {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("msg", data.get("msg").getAsString());
+
+                                Message message = new Message();
+                                message.what = 2;
+                                message.setData(bundle);
+                                uiHandler.sendMessage(message);
+                            }
+                        }.start();
+                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
                         Log.i("返回：", data.get("msg").getAsString());
                     }
+                } else {
+                    new Thread() {
+                        public void run() {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("msg", data.get("msg").getAsString());
+
+                            Message message = new Message();
+                            message.what = 2;
+                            message.setData(bundle);
+                            uiHandler.sendMessage(message);
+                        }
+                    }.start();
+                    Config.getInstance(getApplicationContext()).setEndTime(" - ");
                 }
+                new Thread() {
+                    public void run() {
+                        uiHandler.sendEmptyMessage(0);
+                    }
+                }.start();
             }
         });
     }
@@ -196,14 +273,19 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.open_tiktok_btn) {
-            if (Config.getInstance(this).getOption().equals(Config.PRIVATELY)) {
-                setPrivatelyContent();
+            if (Config.getInstance(this).getActivated()) {
+                if (Config.getInstance(this).getOption().equals(Config.PRIVATELY)) {
+                    setPrivatelyContent();
+                }
+                //打开抖音app
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                ComponentName componentName = new ComponentName("com.ss.android.ugc.aweme", "com.ss.android.ugc.aweme.main.MainActivity");
+                intent.setComponent(componentName);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "软件未激活！", Toast.LENGTH_LONG).show();
             }
-            //打开抖音app
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            ComponentName componentName = new ComponentName("com.ss.android.ugc.aweme", "com.ss.android.ugc.aweme.main.MainActivity");
-            intent.setComponent(componentName);
-            startActivity(intent);
+
         }
 
         if (view.getId() == R.id.usr_setting_btn) {
@@ -370,6 +452,14 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             openPermission.setChecked(true);
         } else {
             openPermission.setChecked(false);
+        }
+
+        if (Config.getInstance(this).getActivated()) {
+            activationStateTv1.setTextColor(Color.GREEN);
+            activationStateTv2.setText("已激活");
+        } else {
+            activationStateTv1.setTextColor(Color.RED);
+            activationStateTv2.setText("未激活");
         }
 
     }

@@ -3,11 +3,12 @@ package com.nice.config;
 import android.content.Context;
 
 import android.os.Build;
+
 import com.nice.tiktoktool.NativeDataManager;
 
 public class Config {
 
-    public static final String CODE_VALIDATE_URL = "http://192.168.10.135/auth/codeValidate";
+    public static final String CODE_VALIDATE_URL = "http://192.168.0.12/auth/codeValidate";
 
     public static final Integer CONCERN = 1;
     public static final Integer PRIVATELY = 2;
@@ -53,7 +54,7 @@ public class Config {
     }
 
     public boolean getStatus() {
-        return status == null ? false : status;
+        return (status == null) ? false : status;
     }
 
     public void setStatus(boolean status) {
@@ -85,10 +86,18 @@ public class Config {
     }
 
     public Boolean getActivated() {
-        return activated;
+        return activated == null ? false : true;
     }
 
     public void setActivated(Boolean activated) {
         this.activated = activated;
+    }
+
+    public String getEndTime() {
+        return mNativeDataManager.getEndTime();
+    }
+
+    public void setEndTime(String activationCode) {
+        mNativeDataManager.setEndTime(activationCode);
     }
 }

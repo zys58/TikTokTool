@@ -1,6 +1,8 @@
 package com.nice.tiktoktool;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Looper;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import android.widget.Toast;
+
 import com.nice.config.Config;
 import com.nice.service.TikTokAccessibilityService;
 
@@ -37,18 +40,24 @@ public class FloatingView extends FrameLayout {
         beginBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Config.getInstance(getContext()).getStatus()) {
-                    Config.getInstance(getContext()).setStatus(false);
-                    beginBtn.setText("开始执行");
-                    TikTokAccessibilityService.attentionLetter = false;
-                    Toast.makeText(getContext(), "停止执行...", Toast.LENGTH_SHORT).show();
-                    TikTokAccessibilityService.privateLetterList.clear();
-                    TikTokAccessibilityService.attentionCount = 0;
+                if (Config.getInstance(getContext()).getActivated()) {
+                    if (Config.getInstance(getContext()).getStatus()) {
+                        Config.getInstance(getContext()).setStatus(false);
+                        beginBtn.setText("开始执行");
+                        TikTokAccessibilityService.attentionLetter = false;
+                        Toast.makeText(getContext(), "停止执行...", Toast.LENGTH_SHORT).show();
+                        TikTokAccessibilityService.privateLetterList.clear();
+                        TikTokAccessibilityService.attentionCount = 0;
+                    } else {
+                        Config.getInstance(getContext()).setStatus(true);
+                        beginBtn.setText("停止执行");
+                        Toast.makeText(getContext(), "开始执行...", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Config.getInstance(getContext()).setStatus(true);
-                    beginBtn.setText("停止执行");
-                    Toast.makeText(getContext(), "开始执行...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "软件未激活！", Toast.LENGTH_LONG).show();
                 }
+
+
             }
         });
 
