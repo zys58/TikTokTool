@@ -12,7 +12,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -25,8 +25,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation  'com.squareup.okhttp3:okhttp:3.6.0'
-    implementation  'com.squareup.okio:okio:1.11.0'
-    implementation  'com.google.code.gson:gson:2.6.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.6.0'
+    implementation 'com.squareup.okio:okio:1.11.0'
+    implementation 'com.google.code.gson:gson:2.6.2'
 }
 
