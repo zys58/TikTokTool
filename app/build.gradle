@@ -12,7 +12,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -27,6 +27,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'com.squareup.okio:okio:1.11.0'
-    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.53'
 }
 

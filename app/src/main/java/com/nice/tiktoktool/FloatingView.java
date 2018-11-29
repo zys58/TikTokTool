@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.nice.config.Config;
@@ -25,7 +26,7 @@ import com.nice.service.TikTokAccessibilityService;
 public class FloatingView extends FrameLayout {
     private Context mContext;
     private View mView;
-    private Button beginBtn;
+    private ImageView beginBtn;
     private int mTouchStartX, mTouchStartY;//手指按下时坐标
     private WindowManager.LayoutParams mParams;
     private FloatingManager mWindowManager;
@@ -43,14 +44,14 @@ public class FloatingView extends FrameLayout {
                 if (Config.getInstance(getContext()).getActivated()) {
                     if (Config.getInstance(getContext()).getStatus()) {
                         Config.getInstance(getContext()).setStatus(false);
-                        beginBtn.setText("开始执行");
+                        beginBtn.setImageResource(R.mipmap.start);
                         TikTokAccessibilityService.attentionLetter = false;
                         Toast.makeText(getContext(), "停止执行...", Toast.LENGTH_SHORT).show();
                         TikTokAccessibilityService.privateLetterList.clear();
                         TikTokAccessibilityService.attentionCount = 0;
                     } else {
                         Config.getInstance(getContext()).setStatus(true);
-                        beginBtn.setText("停止执行");
+                        beginBtn.setImageResource(R.mipmap.stop);
                         Toast.makeText(getContext(), "开始执行...", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -84,7 +85,7 @@ public class FloatingView extends FrameLayout {
 
     public void show() {
         mParams = new WindowManager.LayoutParams();
-        mParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mParams.gravity = Gravity.CENTER | Gravity.RIGHT;
         mParams.x = 0;
         mParams.y = 200;
         //总是出现在应用程序窗口之上

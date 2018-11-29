@@ -1,86 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".MainActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:elevation="5dp"
-        android:padding="15dp">
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            android:elevation="5dp"
+            android:padding="10dp">
+
+        <ImageView
+                android:id="@+id/setting_back_btn"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/back"
+                android:src="@mipmap/back"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="用户设置"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="用户设置"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/activation_code" />
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="15dp">
 
-            <EditText
-                android:id="@+id/activation_code_et"
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="9" />
+                android:text="@string/activation_code"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <EditText
+                    android:id="@+id/activation_code_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="9"/>
 
             <Button
-                android:id="@+id/activation_btn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/activation" />
+                    android:id="@+id/activation_btn"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/activation"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="到期时间：" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="到期时间："/>
 
             <TextView
-                android:id="@+id/end_time_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="---" />
+                    android:id="@+id/end_time_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="---"/>
 
         </LinearLayout>
 
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/setting_progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+            android:id="@+id/setting_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
 </LinearLayout>

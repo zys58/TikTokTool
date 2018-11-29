@@ -4,19 +4,11 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.*;
 import android.graphics.Color;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
-import android.os.Binder;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.*;
 import android.provider.Settings;
-import android.system.Os;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
@@ -24,22 +16,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.*;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.alibaba.fastjson.JSONObject;
 import com.nice.config.Config;
 import com.nice.entity.ActivationCode;
 import com.nice.service.MyService;
 import com.nice.utils.AESUtils;
 import com.nice.utils.InstallationUtil;
 import com.nice.utils.JumpPermissionManagement;
-
 import okhttp3.*;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -50,7 +34,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
     private Switch openPermission, openServiceBtn;
     private Button openTiktokBtn;
-    private TextView attentionSpeedTv, privatelySpeedTv, activationStateTv1, activationStateTv2;
+    private TextView attentionSpeedTv, privatelySpeedTv, activationStateTv1, activationStateTv2, activationEndTime;
     private RadioButton attentionRa, privatelyRa;
     private LinearLayout attentionSetting, privatelySetting;
     private EditText privatelyContent;
@@ -75,6 +59,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                     Toast.makeText(getApplicationContext(), bundle.getString("msg"), Toast.LENGTH_LONG).show();
                     activationStateTv1.setTextColor(Color.RED);
                     activationStateTv2.setText("未激活");
+                    break;
+                case 500:
+                    Toast.makeText(getApplicationContext(), "连接服务器失败！", Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;
@@ -105,6 +92,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         progressBar = findViewById(R.id.progress_bar);
         activationStateTv1 = findViewById(R.id.activation_state_tv1);
         activationStateTv2 = findViewById(R.id.activation_state_tv2);
+        activationEndTime = findViewById(R.id.activation_end_time);
 
         changeStatus();
         openServiceBtn.setOnCheckedChangeListener(this);
@@ -184,14 +172,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
         JSONObject encryptedDataEntity = new JSONObject();
         JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("activationCode", Config.getInstance(this).getActivationCode());
-            jsonObject.put("InstallationCode", InstallationUtil.id(this));
-            jsonObject.put("deviceInfo", Config.DEVICE_INFO);
-            encryptedDataEntity.put("data", AESUtils.encode(jsonObject.toString()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        jsonObject.put("activationCode", Config.getInstance(this).getActivationCode());
+        jsonObject.put("InstallationCode", InstallationUtil.id(this));
+        jsonObject.put("deviceInfo", Config.DEVICE_INFO);
+        encryptedDataEntity.put("data", AESUtils.encode(jsonObject.toString()));
         //json字符串
         String value = String.valueOf(encryptedDataEntity);
         //1.创建OkHttpClient对象
@@ -212,17 +196,20 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                 new Thread() {
                     public void run() {
                         uiHandler.sendEmptyMessage(0);
+                        uiHandler.sendEmptyMessage(500);
+                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                        Config.getInstance(getApplicationContext()).setActivated(false);
                     }
                 }.start();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                JsonObject encryptedData = new JsonParser().parse(response.body().string()).getAsJsonObject();
-                final JsonObject data = new JsonParser().parse(AESUtils.decode(encryptedData.get("data").getAsString())).getAsJsonObject();
-                if (data.get("code").getAsInt() == 0) {
-                    if (data.get("valid").getAsInt() == 1) {
-                        ActivationCode activationCode = new Gson().fromJson(new JsonParser().parse(data.get("data").getAsString()), ActivationCode.class);
+                JSONObject encryptedData = JSONObject.parseObject(response.body().string());
+                final JSONObject data = JSONObject.parseObject(AESUtils.decode(encryptedData.getString("data")));
+                if (data.getInteger("code") == 0) {
+                    if (data.getInteger("valid") == 1) {
+                        ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
                         Config.getInstance(getApplicationContext()).setActivated(true);
                         Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
                         Config.getInstance(getApplicationContext()).setEndTime(DateUtils.formatDateTime(getApplicationContext(), activationCode.getEndTime(), DateUtils.FORMAT_SHOW_YEAR));
@@ -235,7 +222,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                         new Thread() {
                             public void run() {
                                 Bundle bundle = new Bundle();
-                                bundle.putString("msg", data.get("msg").getAsString());
+                                bundle.putString("msg", data.getString("msg"));
 
                                 Message message = new Message();
                                 message.what = 2;
@@ -244,13 +231,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                             }
                         }.start();
                         Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                        Log.i("返回：", data.get("msg").getAsString());
+                        Log.i("返回：", data.getString("msg"));
                     }
                 } else {
                     new Thread() {
                         public void run() {
                             Bundle bundle = new Bundle();
-                            bundle.putString("msg", data.get("msg").getAsString());
+                            Log.i("返回：", data.getString("msg"));
 
                             Message message = new Message();
                             message.what = 2;
@@ -457,9 +444,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         if (Config.getInstance(this).getActivated()) {
             activationStateTv1.setTextColor(Color.GREEN);
             activationStateTv2.setText("已激活");
+            activationEndTime.setText("(" + Config.getInstance(this).getEndTime() + "到期)");
         } else {
             activationStateTv1.setTextColor(Color.RED);
             activationStateTv2.setText("未激活");
+            activationEndTime.setText("");
         }
 
     }

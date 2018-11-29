@@ -8,26 +8,16 @@ import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.alibaba.fastjson.JSONObject;
 import com.nice.config.Config;
 import com.nice.entity.ActivationCode;
 import com.nice.service.MyService;
 import com.nice.utils.AESUtils;
 import com.nice.utils.InstallationUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.io.Serializable;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,6 +33,7 @@ public class UserSettingActivity extends Activity {
     private Button activation_btn;
     private ProgressBar progressBar;
     private TextView endTimeTv;
+    private ImageView settingBackBtn;
 
     /*构造一个Handler，主要作用有：1）供非UI线程发送Message  2）处理Message并完成UI更新*/
     public Handler uiHandler = new Handler(new Handler.Callback() {
@@ -56,9 +47,13 @@ public class UserSettingActivity extends Activity {
                     Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_LONG).show();
                     activationCodeEt.setText(Config.getInstance(getApplicationContext()).getActivationCode());
                     endTimeTv.setText(Config.getInstance(getApplicationContext()).getEndTime());
+                    finish();
                     break;
                 case 2:
                     Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_LONG).show();
+                    break;
+                case 500:
+                    Toast.makeText(getApplicationContext(), "连接服务器失败！", Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;
@@ -77,11 +72,18 @@ public class UserSettingActivity extends Activity {
         activation_btn = findViewById(R.id.activation_btn);
         progressBar = findViewById(R.id.setting_progress_bar);
         endTimeTv = findViewById(R.id.end_time_tv);
+        settingBackBtn = findViewById(R.id.setting_back_btn);
 
         activation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 requestDeviceInfo();
+            }
+        });
+        settingBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 
@@ -97,14 +99,10 @@ public class UserSettingActivity extends Activity {
 
         JSONObject encryptedDataEntity = new JSONObject();
         JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("activationCode", activationCodeEt.getText());
-            jsonObject.put("InstallationCode", InstallationUtil.id(this));
-            jsonObject.put("deviceInfo", Config.DEVICE_INFO);
-            encryptedDataEntity.put("data", AESUtils.encode(jsonObject.toString()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        jsonObject.put("activationCode", activationCodeEt.getText());
+        jsonObject.put("InstallationCode", InstallationUtil.id(this));
+        jsonObject.put("deviceInfo", Config.DEVICE_INFO);
+        encryptedDataEntity.put("data", AESUtils.encode(jsonObject.toString()));
         //json字符串
         String value = String.valueOf(encryptedDataEntity);
         //1.创建OkHttpClient对象
@@ -125,17 +123,20 @@ public class UserSettingActivity extends Activity {
                 new Thread() {
                     public void run() {
                         uiHandler.sendEmptyMessage(0);
+                        uiHandler.sendEmptyMessage(500);
+                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                        Config.getInstance(getApplicationContext()).setActivated(false);
                     }
                 }.start();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                JsonObject encryptedData = new JsonParser().parse(response.body().string()).getAsJsonObject();
-                final JsonObject data = new JsonParser().parse(AESUtils.decode(encryptedData.get("data").getAsString())).getAsJsonObject();
-                if (data.get("code").getAsInt() == 0) {
-                    if (data.get("valid").getAsInt() == 1) {
-                        ActivationCode activationCode = new Gson().fromJson(new JsonParser().parse(data.get("data").getAsString()), ActivationCode.class);
+                JSONObject encryptedData = JSONObject.parseObject(response.body().string());
+                final com.alibaba.fastjson.JSONObject data = com.alibaba.fastjson.JSONObject.parseObject(AESUtils.decode(encryptedData.getString("data")));
+                if (data.getInteger("code") == 0) {
+                    if (data.getInteger("valid") == 1) {
+                        ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
                         Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
                         Config.getInstance(getApplicationContext()).setActivated(true);
                         Config.getInstance(getApplicationContext()).setEndTime(DateUtils.formatDateTime(getApplicationContext(), activationCode.getEndTime(), DateUtils.FORMAT_SHOW_YEAR));
@@ -154,7 +155,7 @@ public class UserSettingActivity extends Activity {
                         new Thread() {
                             public void run() {
                                 Bundle bundle = new Bundle();
-                                bundle.putString("msg", data.get("msg").getAsString());
+                                bundle.putString("msg", data.getString("msg"));
 
                                 Message message = new Message();
                                 message.what = 2;
@@ -163,13 +164,14 @@ public class UserSettingActivity extends Activity {
                             }
                         }.start();
                         Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                        Log.i("返回：", data.get("msg").getAsString());
+                        Config.getInstance(getApplicationContext()).setActivated(false);
+                        Log.i("返回：", data.getString("msg"));
                     }
                 } else {
                     new Thread() {
                         public void run() {
                             Bundle bundle = new Bundle();
-                            bundle.putString("msg", data.get("msg").getAsString());
+                            bundle.putString("msg", data.getString("msg"));
 
                             Message message = new Message();
                             message.what = 2;
@@ -178,6 +180,7 @@ public class UserSettingActivity extends Activity {
                         }
                     }.start();
                     Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                    Config.getInstance(getApplicationContext()).setActivated(false);
                 }
                 new Thread() {
                     public void run() {

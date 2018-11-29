@@ -1,235 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".MainActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:elevation="5dp"
-        android:padding="15dp">
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            android:elevation="5dp"
+            android:padding="15dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
         <ImageView
-            android:id="@+id/usr_setting_btn"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="#00000000"
-            android:contentDescription="@string/set_user"
-            android:src="@mipmap/user_set" />
+                android:id="@+id/usr_setting_btn"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/set_user"
+                android:src="@mipmap/user_set"/>
 
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp">
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="软件激活状态：" />
-
-            <TextView
-                android:id="@+id/activation_state_tv1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="●  " />
-
-
-            <TextView
-                android:id="@+id/activation_state_tv2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+            android:orientation="vertical"
+            android:padding="15dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/service_status" />
-
-            <Switch
-                android:id="@+id/open_accessibility_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/permission_status" />
-
-            <Switch
-                android:id="@+id/open_permission_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/function" />
-
-            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/attention_ra"
+            <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/attention" />
+                    android:text="软件激活状态："/>
+
+            <TextView
+                    android:id="@+id/activation_state_tv1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="●  "/>
+
+
+            <TextView
+                    android:id="@+id/activation_state_tv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/activation_end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/service_status"/>
+
+            <Switch
+                    android:id="@+id/open_accessibility_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/permission_status"/>
+
+            <Switch
+                    android:id="@+id/open_permission_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/function"/>
+
+            <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/privately_ra"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/privately" />
+                        android:id="@+id/attention_ra"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/attention"/>
+
+                <RadioButton
+                        android:id="@+id/privately_ra"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privately"/>
             </RadioGroup>
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <LinearLayout
-                android:id="@+id/attention_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp">
 
-                <LinearLayout
+            <LinearLayout
+                    android:id="@+id/attention_setting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/attention_speed" />
+                        android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/attention_speed_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/attention_speed"/>
+
+                    <TextView
+                            android:id="@+id/attention_speed_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
                 </LinearLayout>
 
 
                 <SeekBar
-                    android:id="@+id/attention_speed_sb"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:max="30"
-                    android:progress="3" />
+                        android:id="@+id/attention_speed_sb"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:max="30"
+                        android:progress="3"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/privately_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
+                    android:id="@+id/privately_setting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/privately_speed" />
+                        android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/privately_speed_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/privately_speed"/>
+
+                    <TextView
+                            android:id="@+id/privately_speed_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
                 </LinearLayout>
 
                 <SeekBar
-                    android:id="@+id/privately_speed_sb"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:max="30"
-                    android:progress="3" />
+                        android:id="@+id/privately_speed_sb"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:max="30"
+                        android:progress="3"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/privately_content" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/privately_content"/>
 
                 <EditText
-                    android:id="@+id/privately_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:lines="5"
-                    android:maxLines="10" />
+                        android:id="@+id/privately_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:lines="5"
+                        android:maxLines="10"/>
             </LinearLayout>
 
         </RelativeLayout>
 
         <Button
-            android:id="@+id/open_tiktok_btn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="50dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:text="@string/open_tiktok"
-            android:textColor="@color/white" />
+                android:id="@+id/open_tiktok_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:text="@string/open_tiktok"
+                android:textColor="@color/white"/>
 
         <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
     </LinearLayout>
 

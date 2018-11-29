@@ -86,7 +86,7 @@ public class Config {
     }
 
     public Boolean getActivated() {
-        return activated == null ? false : true;
+        return activated != null && activated;
     }
 
     public void setActivated(Boolean activated) {
