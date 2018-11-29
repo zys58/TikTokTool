@@ -222,7 +222,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                 final JsonObject data = new JsonParser().parse(AESUtils.decode(encryptedData.get("data").getAsString())).getAsJsonObject();
                 if (data.get("code").getAsInt() == 0) {
                     if (data.get("valid").getAsInt() == 1) {
-                        ActivationCode activationCode = new Gson().fromJson(data.getAsJsonObject("data"), ActivationCode.class);
+                        ActivationCode activationCode = new Gson().fromJson(new JsonParser().parse(data.get("data").getAsString()), ActivationCode.class);
                         Config.getInstance(getApplicationContext()).setActivated(true);
                         Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
                         Config.getInstance(getApplicationContext()).setEndTime(DateUtils.formatDateTime(getApplicationContext(), activationCode.getEndTime(), DateUtils.FORMAT_SHOW_YEAR));

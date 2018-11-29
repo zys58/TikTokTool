@@ -8,7 +8,7 @@ import com.nice.tiktoktool.NativeDataManager;
 
 public class Config {
 
-    public static final String CODE_VALIDATE_URL = "http://192.168.0.12/auth/codeValidate";
+    public static final String CODE_VALIDATE_URL = "http://yl888.site:8088/auth/codeValidate";
 
     public static final Integer CONCERN = 1;
     public static final Integer PRIVATELY = 2;
