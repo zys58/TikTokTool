@@ -8,12 +8,13 @@ import com.nice.tiktoktool.NativeDataManager;
 
 public class Config {
 
-    public static final String CODE_VALIDATE_URL = "http://yl888.site:8088/auth/codeValidate";
+    //    public static final String CODE_VALIDATE_URL = "http://yl888.site:8088/auth/codeValidate";
+    public static final String CODE_VALIDATE_URL = "http://tt.yl888.site:8088/auth/codeValidate";
 
     public static final Integer CONCERN = 1;
     public static final Integer PRIVATELY = 2;
 
-    public static final String DEVICE_INFO = Build.MANUFACTURER + "-" + Build.DEVICE;
+    public static final String DEVICE_INFO = Build.MANUFACTURER + "-" + Build.DEVICE + "-" + Build.VERSION.SDK_INT;
 
     private Boolean status;
     private Integer option;

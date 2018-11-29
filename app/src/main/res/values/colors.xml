@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2b2b2b</color>
-    <color name="colorPrimaryDark">#313335</color>
+    <color name="colorPrimary">#df0064</color>
+    <color name="colorPrimaryDark">#df0064</color>
     <color name="colorAccent">#b90b0b</color>
     <color name="white">#ffffff</color> <!-- 白色 -->
     <color name="ivory">#fffff0</color> <!-- 象牙色 -->

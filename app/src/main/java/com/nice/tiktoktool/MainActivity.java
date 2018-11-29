@@ -4,18 +4,36 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
-import android.content.*;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.*;
+import android.os.Binder;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.alibaba.fastjson.JSONObject;
 import com.nice.config.Config;
 import com.nice.entity.ActivationCode;
@@ -23,12 +41,19 @@ import com.nice.service.MyService;
 import com.nice.utils.AESUtils;
 import com.nice.utils.InstallationUtil;
 import com.nice.utils.JumpPermissionManagement;
-import okhttp3.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -54,6 +79,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                 case 1:
                     activationStateTv1.setTextColor(Color.GREEN);
                     activationStateTv2.setText("已激活");
+                    activationEndTime.setText("(" + Config.getInstance(getApplicationContext()).getEndTime() + "到期)");
                     break;
                 case 2:
                     Bundle bundle = msg.getData();

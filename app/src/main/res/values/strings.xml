@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TikTokTool</string>
+    <string name="app_name">日天小坦克</string>
     <string name="accessibility_service_description">抖音引流脚本</string>
     <string name="begin">开始执行</string>
     <string name="open_permission">打开悬浮窗权限</string>
@@ -17,4 +17,5 @@
     <string name="activation_code">激活码：</string>
     <string name="activation">激活</string>
     <string name="back">返回</string>
+    <string name="title_name">日天小坦克[唯一官方群:489611929]</string>
 </resources>
