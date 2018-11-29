@@ -18,6 +18,7 @@ import com.nice.utils.AESUtils;
 import com.nice.utils.InstallationUtil;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -139,7 +140,7 @@ public class UserSettingActivity extends Activity {
                         ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
                         Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
                         Config.getInstance(getApplicationContext()).setActivated(true);
-                        Config.getInstance(getApplicationContext()).setEndTime(DateUtils.formatDateTime(getApplicationContext(), activationCode.getEndTime(), DateUtils.FORMAT_SHOW_YEAR));
+                        Config.getInstance(getApplicationContext()).setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(activationCode.getEndTime()));
                         new Thread() {
                             public void run() {
                                 Bundle bundle = new Bundle();

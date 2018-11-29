@@ -27,6 +27,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MainActivity extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -212,7 +213,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                         ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
                         Config.getInstance(getApplicationContext()).setActivated(true);
                         Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
-                        Config.getInstance(getApplicationContext()).setEndTime(DateUtils.formatDateTime(getApplicationContext(), activationCode.getEndTime(), DateUtils.FORMAT_SHOW_YEAR));
+                        Config.getInstance(getApplicationContext()).setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(activationCode.getEndTime()));
                         new Thread() {
                             public void run() {
                                 uiHandler.sendEmptyMessage(1);
