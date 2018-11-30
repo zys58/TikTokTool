@@ -1,6 +1,9 @@
 package com.nice.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -12,6 +15,7 @@ import com.nice.utils.PerformClickUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class TikTokAccessibilityService extends AccessibilityService {
 
@@ -71,9 +75,11 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
                         final List<AccessibilityNodeInfo> privatelyViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/axn");
                         if (!privatelyViews.isEmpty()) {
+
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Looper.prepare();
                                     //改变当前状态为正在关注
                                     attentionLetter = true;
                                     //循环当页已获取用户列表
@@ -83,6 +89,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                                         PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz");
                                     }
                                     attentionLetter = false;
+                                    Looper.loop();
                                 }
                             }).start();
                             //清理节点
@@ -190,11 +197,13 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         while (rootInActiveWindow.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/bcn").isEmpty() && Config.getInstance(this).getStatus());
                         count = 0;
 
+                        //检测是否已经回复过
+                        boolean replied = false;
                         //已经私信过的不操作
-                        while (rootInActiveWindow.findAccessibilityNodeInfosByText(Config.getInstance(this).getPrivatelyContent()).isEmpty() && Config.getInstance(this).getStatus()) {
+                        while (!replied && Config.getInstance(this).getStatus()) {
+                            setPrivatelyContent();
                             Log.i("昵称：", info.getText().toString() + "--私信");
                             PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/bcn");
-                            rootInActiveWindow = this.getRootInActiveWindow();
                             Thread.sleep(500);
                             count++;
                             if (count >= 5) {
@@ -221,6 +230,12 @@ public class TikTokAccessibilityService extends AccessibilityService {
 
                             PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/i0");
                             Thread.sleep(500);
+
+                            for (String s : Config.getInstance(this).getPrivatelyContent()) {
+                                if (!rootInActiveWindow.findAccessibilityNodeInfosByText(s).isEmpty()) {
+                                    replied = true;
+                                }
+                            }
                         }
                         count = 0;
 
@@ -267,5 +282,20 @@ public class TikTokAccessibilityService extends AccessibilityService {
         }
     }
 
+    private void setPrivatelyContent() {
+
+        //获取设置的私信内容
+        String[] privatelyContent = Config.getInstance(this).getPrivatelyContent();
+        int max = privatelyContent.length;
+        int min = 0;
+        Random random = new Random();
+        int i = random.nextInt(max) % (max - min + 1) + min;
+        //获取剪贴板管理器：
+        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        // 创建普通字符型ClipData
+        ClipData mClipData = ClipData.newPlainText("Label", privatelyContent[i]);
+        // 将ClipData内容放到系统剪贴板里。
+        cm.setPrimaryClip(mClipData);
+    }
 
 }

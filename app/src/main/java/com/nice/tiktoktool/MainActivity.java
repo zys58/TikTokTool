@@ -288,9 +288,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     public void onClick(View view) {
         if (view.getId() == R.id.open_tiktok_btn) {
             if (Config.getInstance(this).getActivated()) {
-                if (Config.getInstance(this).getOption().equals(Config.PRIVATELY)) {
-                    setPrivatelyContent();
-                }
                 //打开抖音app
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 ComponentName componentName = new ComponentName("com.ss.android.ugc.aweme", "com.ss.android.ugc.aweme.main.MainActivity");
@@ -308,17 +305,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         }
     }
 
-    private void setPrivatelyContent() {
-        //获取设置的私信内容
-        String content = privatelyContent.getText().toString();
-        //获取剪贴板管理器：
-        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        // 创建普通字符型ClipData
-        ClipData mClipData = ClipData.newPlainText("Label", content);
-        // 将ClipData内容放到系统剪贴板里。
-        cm.setPrimaryClip(mClipData);
-    }
-
     private void settingViewChange() {
         if (attentionRa.isChecked()) {
             attentionSetting.setVisibility(View.VISIBLE);
@@ -332,7 +318,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             attentionSetting.setVisibility(View.GONE);
             privatelySetting.setVisibility(View.VISIBLE);
             //私信内容显示
-            privatelyContent.setText(Config.getInstance(this).getPrivatelyContent());
+            privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
         }
     }
 

@@ -6,6 +6,8 @@ import android.os.Build;
 
 import com.nice.tiktoktool.NativeDataManager;
 
+import java.util.List;
+
 public class Config {
 
     //    public static final String CODE_VALIDATE_URL = "http://yl888.site:8088/auth/codeValidate";
@@ -70,7 +72,11 @@ public class Config {
         this.option = option;
     }
 
-    public String getPrivatelyContent() {
+    public String[] getPrivatelyContent() {
+        return mNativeDataManager.getPrivatelyContent().split("\\|");
+    }
+
+    public String getPrivatelyContentText() {
         return mNativeDataManager.getPrivatelyContent();
     }
 
