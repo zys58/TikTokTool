@@ -28,6 +28,8 @@ public class ActivationCode implements Serializable {
 
     private Integer sold;
 
+    private Date soldTime;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -100,5 +102,13 @@ public class ActivationCode implements Serializable {
 
     public void setSold(Integer sold) {
         this.sold = sold;
+    }
+
+    public Date getSoldTime() {
+        return soldTime;
+    }
+
+    public void setSoldTime(Date soldTime) {
+        this.soldTime = soldTime;
     }
 }
