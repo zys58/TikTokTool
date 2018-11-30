@@ -11,11 +11,12 @@
     <string name="privately">私信</string>
     <string name="function">功能：</string>
     <string name="privately_content">私信内容：</string>
-    <string name="attention_speed">关注速度：</string>
+    <string name="attention_speed">取消/关注速度：</string>
     <string name="set_user">用户设置</string>
     <string name="privately_speed">私信速度：</string>
     <string name="activation_code">激活码：</string>
     <string name="activation">激活</string>
     <string name="back">返回</string>
     <string name="title_name">日天小坦克[唯一官方群:489611929]</string>
+    <string name="cancel_attention">取消关注</string>
 </resources>

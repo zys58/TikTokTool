@@ -4,8 +4,6 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -61,7 +59,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     private Switch openPermission, openServiceBtn;
     private Button openTiktokBtn;
     private TextView attentionSpeedTv, privatelySpeedTv, activationStateTv1, activationStateTv2, activationEndTime;
-    private RadioButton attentionRa, privatelyRa;
+    private RadioButton attentionRa, privatelyRa, cancelAttentionRa;
     private LinearLayout attentionSetting, privatelySetting;
     private EditText privatelyContent;
     private SeekBar attentionSpeedSb, privatelySpeedSb;
@@ -108,6 +106,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         openTiktokBtn = findViewById(R.id.open_tiktok_btn);
         attentionRa = findViewById(R.id.attention_ra);
         privatelyRa = findViewById(R.id.privately_ra);
+        cancelAttentionRa = findViewById(R.id.cancel_attention_ra);
         attentionSetting = findViewById(R.id.attention_setting);
         privatelySetting = findViewById(R.id.privately_setting);
         privatelyContent = findViewById(R.id.privately_content);
@@ -126,6 +125,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         openPermission.setOnCheckedChangeListener(this);
         attentionRa.setOnCheckedChangeListener(this);
         privatelyRa.setOnCheckedChangeListener(this);
+        cancelAttentionRa.setOnCheckedChangeListener(this);
         openTiktokBtn.setOnClickListener(this);
         usrSettingBtn.setOnClickListener(this);
         attentionSpeedSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -314,11 +314,19 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             attentionSpeedSb.setProgress((int) (Config.getInstance(this).getAttentionSpeed() / 1000));
             privatelySpeedTv.setText("(" + Config.getInstance(this).getPrivatelySpeed() / 1000 + "~" + (Config.getInstance(this).getPrivatelySpeed() / 1000 + 2) + "秒/个)");
             privatelySpeedSb.setProgress((int) (Config.getInstance(this).getPrivatelySpeed() / 1000));
-        } else {
+        } else if (privatelyRa.isChecked()) {
             attentionSetting.setVisibility(View.GONE);
             privatelySetting.setVisibility(View.VISIBLE);
             //私信内容显示
             privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
+        } else if (cancelAttentionRa.isChecked()) {
+            attentionSetting.setVisibility(View.VISIBLE);
+            privatelySetting.setVisibility(View.GONE);
+            //速度显示
+            attentionSpeedTv.setText("(" + Config.getInstance(this).getAttentionSpeed() / 1000 + "~" + (Config.getInstance(this).getAttentionSpeed() / 1000 + 2) + "秒/个)");
+            attentionSpeedSb.setProgress((int) (Config.getInstance(this).getAttentionSpeed() / 1000));
+            privatelySpeedTv.setText("(" + Config.getInstance(this).getPrivatelySpeed() / 1000 + "~" + (Config.getInstance(this).getPrivatelySpeed() / 1000 + 2) + "秒/个)");
+            privatelySpeedSb.setProgress((int) (Config.getInstance(this).getPrivatelySpeed() / 1000));
         }
     }
 
@@ -345,6 +353,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         if (compoundButton.getId() == R.id.privately_ra) {
             if (b) {
                 Config.getInstance(this).setOption(Config.PRIVATELY);
+            }
+        }
+
+        if (compoundButton.getId() == R.id.cancel_attention_ra) {
+            if (b) {
+                Config.getInstance(this).setOption(Config.CANCEL_CONCERN);
             }
         }
     }

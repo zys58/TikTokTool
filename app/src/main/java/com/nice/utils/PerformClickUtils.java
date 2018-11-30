@@ -2,7 +2,10 @@ package com.nice.utils;
 
 import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import com.nice.config.Config;
 
 import java.util.List;
 
@@ -146,5 +149,39 @@ public class PerformClickUtils {
             }
             service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
         }
+    }
+
+    /**
+     * 跳转指定标记页面
+     */
+    public static void JumpViewByViewId(AccessibilityService accessibilityService, String fromId, String toId, long pauseTime) throws InterruptedException {
+        do {
+            accessibilityService.getRootInActiveWindow().refresh();
+            PerformClickUtils.findViewIdAndClick(accessibilityService, fromId);
+            Thread.sleep(pauseTime);
+        }
+        while (accessibilityService.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(toId).isEmpty() && Config.getInstance(accessibilityService).getStatus());
+    }
+
+    /**
+     * 跳转指定标记页面
+     */
+    public static void JumpViewByViewInfo(AccessibilityService accessibilityService, AccessibilityNodeInfo info, String toId, long pauseTime) throws InterruptedException {
+        do {
+            PerformClickUtils.performClick(info);
+            Thread.sleep(pauseTime);
+        }
+        while (accessibilityService.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(toId).isEmpty() && Config.getInstance(accessibilityService).getStatus());
+    }
+
+    /**
+     * 跳转指定标记页面
+     */
+    public static void JumpViewByViewText(AccessibilityService accessibilityService, String text, String toId, long pauseTime) throws InterruptedException {
+        do {
+            PerformClickUtils.findTextAndClick(accessibilityService, text);
+            Thread.sleep(pauseTime);
+        }
+        while (accessibilityService.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(toId).isEmpty() && Config.getInstance(accessibilityService).getStatus());
     }
 }

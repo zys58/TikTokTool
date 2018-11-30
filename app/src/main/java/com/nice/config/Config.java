@@ -15,6 +15,8 @@ public class Config {
 
     public static final Integer CONCERN = 1;
     public static final Integer PRIVATELY = 2;
+    public static final Integer CANCEL_CONCERN = 3;
+    public static final Integer COMMENT_PRIVATELY = 4;
 
     public static final String DEVICE_INFO = Build.MANUFACTURER + "-" + Build.DEVICE + "-" + Build.VERSION.SDK_INT;
 
