@@ -33,12 +33,25 @@
                 android:src="@mipmap/user_set"/>
 
     </RelativeLayout>
-
+    <!--begin-->
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="15dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_launcher_foreground"/>
+        </LinearLayout>
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -236,5 +249,7 @@
                 android:visibility="gone"/>
 
     </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
