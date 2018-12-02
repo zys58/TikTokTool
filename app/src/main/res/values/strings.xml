@@ -9,8 +9,8 @@
     <string name="open_tiktok">启动</string>
     <string name="attention">关注</string>
     <string name="privately">私信</string>
-    <string name="function">功能：</string>
-    <string name="privately_content">私信内容：</string>
+    <string name="select_function">选择功能：</string>
+    <string name="privately_content">私信内容(多条话术用|分开，程序会随机发送)：</string>
     <string name="attention_speed">取消/关注速度：</string>
     <string name="set_user">用户设置</string>
     <string name="privately_speed">私信速度：</string>

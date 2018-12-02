@@ -20,14 +20,16 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,12 +39,14 @@ import com.nice.config.Config;
 import com.nice.entity.ActivationCode;
 import com.nice.service.MyService;
 import com.nice.utils.AESUtils;
+import com.nice.utils.BaseAccessibilityService;
 import com.nice.utils.InstallationUtil;
 import com.nice.utils.JumpPermissionManagement;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -53,18 +57,19 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class MainActivity extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
 
     private Switch openPermission, openServiceBtn;
     private Button openTiktokBtn;
     private TextView attentionSpeedTv, privatelySpeedTv, activationStateTv1, activationStateTv2, activationEndTime;
-    private RadioButton attentionRa, privatelyRa, cancelAttentionRa;
     private LinearLayout attentionSetting, privatelySetting;
     private EditText privatelyContent;
     private SeekBar attentionSpeedSb, privatelySpeedSb;
     private ImageView usrSettingBtn;
     private ProgressBar progressBar;
+    private Spinner optionSpinner;
+    private ArrayAdapter adapter;
 
     /*构造一个Handler，主要作用有：1）供非UI线程发送Message  2）处理Message并完成UI更新*/
     public Handler uiHandler = new Handler(new Handler.Callback() {
@@ -104,9 +109,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         openPermission = findViewById(R.id.open_permission_btn);
         openServiceBtn = findViewById(R.id.open_accessibility_btn);
         openTiktokBtn = findViewById(R.id.open_tiktok_btn);
-        attentionRa = findViewById(R.id.attention_ra);
-        privatelyRa = findViewById(R.id.privately_ra);
-        cancelAttentionRa = findViewById(R.id.cancel_attention_ra);
         attentionSetting = findViewById(R.id.attention_setting);
         privatelySetting = findViewById(R.id.privately_setting);
         privatelyContent = findViewById(R.id.privately_content);
@@ -119,15 +121,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         activationStateTv1 = findViewById(R.id.activation_state_tv1);
         activationStateTv2 = findViewById(R.id.activation_state_tv2);
         activationEndTime = findViewById(R.id.activation_end_time);
+        optionSpinner = findViewById(R.id.option_spinner);
+
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, getSpinnerSource());
+        optionSpinner.setAdapter(adapter);
 
         changeStatus();
         openServiceBtn.setOnCheckedChangeListener(this);
         openPermission.setOnCheckedChangeListener(this);
-        attentionRa.setOnCheckedChangeListener(this);
-        privatelyRa.setOnCheckedChangeListener(this);
-        cancelAttentionRa.setOnCheckedChangeListener(this);
         openTiktokBtn.setOnClickListener(this);
         usrSettingBtn.setOnClickListener(this);
+        optionSpinner.setOnItemSelectedListener(this);
         attentionSpeedSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -184,11 +189,20 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             }
         });
 
-        //显示对应的配置界面
-        settingViewChange();
         //请求设备信息
         requestDeviceInfo();
 
+        BaseAccessibilityService.getInstance().init(this);
+
+    }
+
+    public List<String> getSpinnerSource() {
+        List<String> list = new ArrayList<>();
+        list.add("关注");
+        list.add("取消关注");
+        list.add("私信");
+        list.add("视频评论用户私信");
+        return list;
     }
 
     public void requestDeviceInfo() {
@@ -305,34 +319,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         }
     }
 
-    private void settingViewChange() {
-        if (attentionRa.isChecked()) {
-            attentionSetting.setVisibility(View.VISIBLE);
-            privatelySetting.setVisibility(View.GONE);
-            //速度显示
-            attentionSpeedTv.setText("(" + Config.getInstance(this).getAttentionSpeed() / 1000 + "~" + (Config.getInstance(this).getAttentionSpeed() / 1000 + 2) + "秒/个)");
-            attentionSpeedSb.setProgress((int) (Config.getInstance(this).getAttentionSpeed() / 1000));
-            privatelySpeedTv.setText("(" + Config.getInstance(this).getPrivatelySpeed() / 1000 + "~" + (Config.getInstance(this).getPrivatelySpeed() / 1000 + 2) + "秒/个)");
-            privatelySpeedSb.setProgress((int) (Config.getInstance(this).getPrivatelySpeed() / 1000));
-        } else if (privatelyRa.isChecked()) {
-            attentionSetting.setVisibility(View.GONE);
-            privatelySetting.setVisibility(View.VISIBLE);
-            //私信内容显示
-            privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
-        } else if (cancelAttentionRa.isChecked()) {
-            attentionSetting.setVisibility(View.VISIBLE);
-            privatelySetting.setVisibility(View.GONE);
-            //速度显示
-            attentionSpeedTv.setText("(" + Config.getInstance(this).getAttentionSpeed() / 1000 + "~" + (Config.getInstance(this).getAttentionSpeed() / 1000 + 2) + "秒/个)");
-            attentionSpeedSb.setProgress((int) (Config.getInstance(this).getAttentionSpeed() / 1000));
-            privatelySpeedTv.setText("(" + Config.getInstance(this).getPrivatelySpeed() / 1000 + "~" + (Config.getInstance(this).getPrivatelySpeed() / 1000 + 2) + "秒/个)");
-            privatelySpeedSb.setProgress((int) (Config.getInstance(this).getPrivatelySpeed() / 1000));
-        }
-    }
-
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        settingViewChange();
 
         if (compoundButton.getId() == R.id.open_accessibility_btn) {
             if (b) {
@@ -343,22 +331,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         if (compoundButton.getId() == R.id.open_permission_btn) {
             if (b) {
                 openSetting();
-            }
-        }
-        if (compoundButton.getId() == R.id.attention_ra) {
-            if (b) {
-                Config.getInstance(this).setOption(Config.CONCERN);
-            }
-        }
-        if (compoundButton.getId() == R.id.privately_ra) {
-            if (b) {
-                Config.getInstance(this).setOption(Config.PRIVATELY);
-            }
-        }
-
-        if (compoundButton.getId() == R.id.cancel_attention_ra) {
-            if (b) {
-                Config.getInstance(this).setOption(Config.CANCEL_CONCERN);
             }
         }
     }
@@ -493,4 +465,46 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.SHOW));
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (i == 0) {
+            Config.getInstance(this).setOption(Config.CONCERN);
+            attentionSetting.setVisibility(View.VISIBLE);
+            privatelySetting.setVisibility(View.GONE);
+            //速度显示
+            attentionSpeedTv.setText("(" + Config.getInstance(this).getAttentionSpeed() / 1000 + "~" + (Config.getInstance(this).getAttentionSpeed() / 1000 + 2) + "秒/个)");
+            attentionSpeedSb.setProgress((int) (Config.getInstance(this).getAttentionSpeed() / 1000));
+            privatelySpeedTv.setText("(" + Config.getInstance(this).getPrivatelySpeed() / 1000 + "~" + (Config.getInstance(this).getPrivatelySpeed() / 1000 + 2) + "秒/个)");
+            privatelySpeedSb.setProgress((int) (Config.getInstance(this).getPrivatelySpeed() / 1000));
+        }
+        if (i == 1) {
+            Config.getInstance(this).setOption(Config.CANCEL_CONCERN);
+            attentionSetting.setVisibility(View.VISIBLE);
+            privatelySetting.setVisibility(View.GONE);
+            //速度显示
+            attentionSpeedTv.setText("(" + Config.getInstance(this).getAttentionSpeed() / 1000 + "~" + (Config.getInstance(this).getAttentionSpeed() / 1000 + 2) + "秒/个)");
+            attentionSpeedSb.setProgress((int) (Config.getInstance(this).getAttentionSpeed() / 1000));
+            privatelySpeedTv.setText("(" + Config.getInstance(this).getPrivatelySpeed() / 1000 + "~" + (Config.getInstance(this).getPrivatelySpeed() / 1000 + 2) + "秒/个)");
+            privatelySpeedSb.setProgress((int) (Config.getInstance(this).getPrivatelySpeed() / 1000));
+        }
+        if (i == 2) {
+            Config.getInstance(this).setOption(Config.PRIVATELY);
+            attentionSetting.setVisibility(View.GONE);
+            privatelySetting.setVisibility(View.VISIBLE);
+            //私信内容显示
+            privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
+        }
+        if (i == 3) {
+            Config.getInstance(this).setOption(Config.COMMENT_PRIVATELY);
+            attentionSetting.setVisibility(View.GONE);
+            privatelySetting.setVisibility(View.VISIBLE);
+            privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

@@ -7,8 +7,11 @@ import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.nice.config.Config;
 import com.nice.service.TikTokAccessibilityService;
+
+import java.lang.reflect.Field;
 
 /**
  * 悬浮窗view
@@ -100,7 +103,7 @@ public class FloatingView extends FrameLayout {
             if (Config.getInstance(getContext()).getStatus()) {
                 Config.getInstance(getContext()).setStatus(false);
                 beginBtn.setImageResource(R.mipmap.start);
-                TikTokAccessibilityService.attentionLetter = false;
+                TikTokAccessibilityService.executing = false;
                 Toast.makeText(getContext(), "停止执行...", Toast.LENGTH_SHORT).show();
                 TikTokAccessibilityService.privateLetterList.clear();
                 TikTokAccessibilityService.attentionCount = 0;
@@ -118,7 +121,7 @@ public class FloatingView extends FrameLayout {
         mParams = new WindowManager.LayoutParams();
         mParams.gravity = Gravity.CENTER | Gravity.RIGHT;
         mParams.x = 0;
-        mParams.y = 200;
+        mParams.y = 0;
         //总是出现在应用程序窗口之上
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0
             mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;

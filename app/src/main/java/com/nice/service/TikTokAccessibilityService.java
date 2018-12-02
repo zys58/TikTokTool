@@ -11,20 +11,21 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.nice.config.Config;
+import com.nice.utils.BaseAccessibilityService;
 import com.nice.utils.PerformClickUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TikTokAccessibilityService extends AccessibilityService {
+public class TikTokAccessibilityService extends BaseAccessibilityService {
 
     public static List<String> privateLetterList = new ArrayList<>();
+    public static List<String> commentPrivateLetterList = new ArrayList<>();
     public static Integer attentionCount = 0;
+    public static Integer commentPrivatelyCount = 0;
     //操作状态  正在私信/关注
-    public static Boolean privatelyLetter = false;
-    public static Boolean attentionLetter = false;
-    public static Boolean cancelAttentionLetter = false;
+    public static Boolean executing = false;
 
     @Override
     protected void onServiceConnected() {
@@ -34,59 +35,62 @@ public class TikTokAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-//        commentPrivately();
 
         if (Config.getInstance(this).getActivated()) {
 
             if (Config.getInstance(this).getStatus()) {
                 if (Config.getInstance(this).getOption().equals(Config.CONCERN)) {
-                    //当没有关注才进行节点检索
-                    if (!attentionLetter) {
-                        AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
-                        final List<AccessibilityNodeInfo> attentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/c11");
-                        if (!attentionBtns.isEmpty()) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //改变当前状态为正在关注
-                                    attentionLetter = true;
-                                    //循环当页已获取用户列表
-                                    attention(attentionBtns);
-                                    //翻页
-                                    if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
-                                        if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
-                                            toast("脚本已执行完毕");
+                    synchronized (TikTokAccessibilityService.class) {
+                        //当没有关注才进行节点检索
+                        if (!executing) {
+                            AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
+                            final List<AccessibilityNodeInfo> attentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/c11");
+                            if (!attentionBtns.isEmpty()) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        executing = true;
+                                        //改变当前状态为正在关注
+                                        //循环当页已获取用户列表
+                                        attention(attentionBtns);
+                                        //翻页
+                                        if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
+                                                toast("脚本已执行完毕");
+                                            }
                                         }
+                                        executing = false;
                                     }
-                                    attentionLetter = false;
-                                }
-                            }).start();
-                            //清理节点
-                            accessibilityNodeInfo.recycle();
+                                }).start();
+                                //清理节点
+                                accessibilityNodeInfo.recycle();
+                            }
                         }
                     }
                 } else if (Config.getInstance(this).getOption().equals(Config.CANCEL_CONCERN)) {
-                    if (!cancelAttentionLetter) {
-                        AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
-                        final List<AccessibilityNodeInfo> cancelAttentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/c11");
-                        if (!cancelAttentionBtns.isEmpty()) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    cancelAttentionLetter = true;
-                                    //循环当页已获取用户列表
-                                    cancelAttention(cancelAttentionBtns);
-                                    //翻页
-                                    if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
-                                        if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
-                                            toast("脚本已执行完毕");
+                    synchronized (TikTokAccessibilityService.class) {
+                        if (!executing) {
+                            AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
+                            final List<AccessibilityNodeInfo> cancelAttentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/c11");
+                            if (!cancelAttentionBtns.isEmpty()) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        executing = true;
+                                        //循环当页已获取用户列表
+                                        cancelAttention(cancelAttentionBtns);
+                                        //翻页
+                                        if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
+                                                toast("脚本已执行完毕");
+                                            }
                                         }
+                                        executing = false;
                                     }
-                                    cancelAttentionLetter = false;
-                                }
-                            }).start();
-                            //清理节点
-                            accessibilityNodeInfo.recycle();
+                                }).start();
+                                //清理节点
+                                accessibilityNodeInfo.recycle();
+                            }
                         }
                     }
                 } else if (Config.getInstance(this).getOption().equals(Config.PRIVATELY)) {
@@ -94,36 +98,91 @@ public class TikTokAccessibilityService extends AccessibilityService {
                     if ("com.ss.android.ugc.aweme.main.MainActivity".equals(currentWindowActivity)) {
                         PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a_7");
                     }
+                    synchronized (TikTokAccessibilityService.class) {
+                        if (!executing) {
+                            AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
+                            final List<AccessibilityNodeInfo> privatelyViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/axn");
+                            if (!privatelyViews.isEmpty()) {
 
-                    if (!privatelyLetter) {
-                        AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
-                        final List<AccessibilityNodeInfo> privatelyViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/axn");
-                        if (!privatelyViews.isEmpty()) {
-
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Looper.prepare();
-                                    privatelyLetter = true;
-                                    //循环当页已获取用户列表
-                                    privately(privatelyViews);
-                                    //翻页
-                                    if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
-                                        PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz");
-                                        if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
-                                            toast("脚本已执行完毕");
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        executing = true;
+                                        Looper.prepare();
+                                        //循环当页已获取用户列表
+                                        privately(privatelyViews);
+                                        //翻页
+                                        if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
+                                                toast("脚本已执行完毕");
+                                            }
                                         }
+                                        executing = false;
+                                        Looper.loop();
                                     }
-                                    privatelyLetter = false;
-                                    Looper.loop();
-                                }
-                            }).start();
-                            //清理节点
-                            accessibilityNodeInfo.recycle();
+                                }).start();
+                                //清理节点
+                                accessibilityNodeInfo.recycle();
+                            }
                         }
                     }
+                } else if (Config.getInstance(this).getOption().equals(Config.COMMENT_PRIVATELY)) {
+                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a29");
+                    synchronized (TikTokAccessibilityService.class) {
+                        if (!executing) {
+                            final List<AccessibilityNodeInfo> commentViews = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/rw");
+                            if (!commentViews.isEmpty()) {
+                                final List<AccessibilityNodeInfo> childs = new ArrayList<>();
+                                for (int i = 0; i < commentViews.get(0).getChildCount(); i++) {
+                                    childs.add(commentViews.get(0).getChild(i));
+                                }
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        executing = true;
+                                        Looper.prepare();
 
+                                        for (AccessibilityNodeInfo commentView : childs) {
+                                            try {
+//                                                String userName = commentView.getChild(1).getText().toString();
+                                                if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
+                                                    Thread.sleep(1000);
+//                                                    Log.i("私信评论：", userName);
+                                                    PerformClickUtils.JumpViewByViewInfo(TikTokAccessibilityService.this, commentView, "com.ss.android.ugc.aweme:id/hg", 500);
+                                                    if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("删除").isEmpty()) {
+                                                        PerformClickUtils.findTextAndClick(TikTokAccessibilityService.this, "复制");
+                                                    } else {
+                                                        PerformClickUtils.JumpViewByViewText(TikTokAccessibilityService.this, "私信回复", "com.ss.android.ugc.aweme:id/a54", 500);
+                                                        PerformClickUtils.findViewIdAndClick(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/a54");
+                                                        Thread.sleep(500);
+                                                        setPrivatelyContent();
+                                                        getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a54").get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                                                        PerformClickUtils.findViewIdAndClick(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/a57");
+//                                                        commentPrivateLetterList.add(userName);
+                                                        commentPrivatelyCount++;
+                                                    }
+                                                }
+                                                Thread.sleep(Config.getInstance(getApplicationContext()).getPrivatelySpeed());
+                                            } catch (Exception e) {
+                                                Log.i("异常", e.getMessage());
+                                            }
+                                        }
+
+                                        //翻页
+                                        if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/rw") || commentPrivatelyCount > 50) {
+                                                toast("脚本已执行完毕");
+                                            }
+                                        }
+                                        executing = false;
+                                        Looper.loop();
+                                    }
+                                }).start();
+                            }
+                        }
+                    }
                 }
+
             }
         }
 
@@ -142,6 +201,47 @@ public class TikTokAccessibilityService extends AccessibilityService {
                 Looper.loop();
             }
         }).start();
+    }
+
+    /**
+     * 视频评论私信
+     */
+    public synchronized void commentPrivately(List<AccessibilityNodeInfo> commentViews) {
+        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.COMMENT_PRIVATELY)) {
+            try {
+                Thread.sleep(500);
+                for (AccessibilityNodeInfo commentView : commentViews) {
+                    try {
+                        String userName = commentView.getChild(1).getText().toString();
+                        if (Config.getInstance(this).getStatus() && !commentPrivateLetterList.contains(userName)) {
+                            Thread.sleep(1000);
+                            Log.i("私信评论：", userName);
+                            PerformClickUtils.JumpViewByViewInfo(this, commentView, "com.ss.android.ugc.aweme:id/hg", 500);
+                            if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("删除").isEmpty()) {
+                                PerformClickUtils.findTextAndClick(this, "复制");
+                            } else {
+                                PerformClickUtils.JumpViewByViewText(this, "私信回复", "com.ss.android.ugc.aweme:id/a54", 500);
+                                PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a54");
+                                Thread.sleep(500);
+                                setPrivatelyContent();
+                                getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a54").get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                                PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a57");
+                                commentPrivateLetterList.add(userName);
+                                commentPrivatelyCount++;
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.i("异常", e.getMessage());
+                    }
+                    Thread.sleep(Config.getInstance(this).getPrivatelySpeed());
+                }
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Log.i("异常", e.getMessage());
+            }
+
+        }
+
     }
 
     /**
@@ -285,8 +385,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         //放入已私信列表
                         privateLetterList.add(info.getText().toString());
                         toast("已私信" + privateLetterList.size() + "人");
+                        Thread.sleep(Config.getInstance(this).getPrivatelySpeed() + Math.round(2000 * Math.random()));
                     }
-                    Thread.sleep(Config.getInstance(this).getPrivatelySpeed() + Math.round(2000 * Math.random()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     break;
@@ -300,34 +400,6 @@ public class TikTokAccessibilityService extends AccessibilityService {
         }
     }
 
-    /**
-     * 私信
-     */
-    public synchronized void commentPrivately() {
-
-// && Config.getInstance(this).getOption().equals(Config.COMMENT_PRIVATELY)
-        if (Config.getInstance(this).getStatus()) {
-            try {
-                PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/a29", "com.ss.android.ugc.aweme:id/yd", 500);
-                Thread.sleep(2000);
-                final List<AccessibilityNodeInfo> commentViews = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/yd");
-                for (AccessibilityNodeInfo commentView : commentViews) {
-                    PerformClickUtils.JumpViewByViewInfo(this, commentView.getParent(), "com.ss.android.ugc.aweme:id/hg", 500);
-                    PerformClickUtils.JumpViewByViewText(this, "私信回复", "com.ss.android.ugc.aweme:id/a54", 500);
-                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a54");
-                    Thread.sleep(500);
-                    setPrivatelyContent();
-                    getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a54").get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                    Thread.sleep(500);
-                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a57");
-                }
-                Thread.sleep(2000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 
     private void setPrivatelyContent() {
 

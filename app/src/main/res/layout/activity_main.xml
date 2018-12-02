@@ -127,32 +127,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/function" />
+                    android:text="@string/select_function" />
 
-                <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                <Spinner
+                    android:id="@+id/option_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                    <RadioButton
-                        android:id="@+id/attention_ra"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="@string/attention" />
-
-                    <RadioButton
-                        android:id="@+id/cancel_attention_ra"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/cancel_attention" />
-
-                    <RadioButton
-                        android:id="@+id/privately_ra"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/privately" />
-                </RadioGroup>
+                </Spinner>
             </LinearLayout>
 
             <RelativeLayout
