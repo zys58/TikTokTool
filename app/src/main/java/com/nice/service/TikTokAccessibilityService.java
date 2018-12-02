@@ -11,14 +11,13 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.nice.config.Config;
-import com.nice.utils.BaseAccessibilityService;
 import com.nice.utils.PerformClickUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TikTokAccessibilityService extends BaseAccessibilityService {
+public class TikTokAccessibilityService extends AccessibilityService {
 
     public static List<String> privateLetterList = new ArrayList<>();
     public static List<String> commentPrivateLetterList = new ArrayList<>();
@@ -127,47 +126,22 @@ public class TikTokAccessibilityService extends BaseAccessibilityService {
                         }
                     }
                 } else if (Config.getInstance(this).getOption().equals(Config.COMMENT_PRIVATELY)) {
-                    PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a29");
                     synchronized (TikTokAccessibilityService.class) {
                         if (!executing) {
-                            final List<AccessibilityNodeInfo> commentViews = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/rw");
+                            try {
+                                PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/a29", "com.ss.android.ugc.aweme:id/yd", 500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
+                            final List<AccessibilityNodeInfo> commentViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/yd");
                             if (!commentViews.isEmpty()) {
-                                final List<AccessibilityNodeInfo> childs = new ArrayList<>();
-                                for (int i = 0; i < commentViews.get(0).getChildCount(); i++) {
-                                    childs.add(commentViews.get(0).getChild(i));
-                                }
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
                                         executing = true;
                                         Looper.prepare();
-
-                                        for (AccessibilityNodeInfo commentView : childs) {
-                                            try {
-//                                                String userName = commentView.getChild(1).getText().toString();
-                                                if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
-                                                    Thread.sleep(1000);
-//                                                    Log.i("私信评论：", userName);
-                                                    PerformClickUtils.JumpViewByViewInfo(TikTokAccessibilityService.this, commentView, "com.ss.android.ugc.aweme:id/hg", 500);
-                                                    if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("删除").isEmpty()) {
-                                                        PerformClickUtils.findTextAndClick(TikTokAccessibilityService.this, "复制");
-                                                    } else {
-                                                        PerformClickUtils.JumpViewByViewText(TikTokAccessibilityService.this, "私信回复", "com.ss.android.ugc.aweme:id/a54", 500);
-                                                        PerformClickUtils.findViewIdAndClick(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/a54");
-                                                        Thread.sleep(500);
-                                                        setPrivatelyContent();
-                                                        getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a54").get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                                                        PerformClickUtils.findViewIdAndClick(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/a57");
-//                                                        commentPrivateLetterList.add(userName);
-                                                        commentPrivatelyCount++;
-                                                    }
-                                                }
-                                                Thread.sleep(Config.getInstance(getApplicationContext()).getPrivatelySpeed());
-                                            } catch (Exception e) {
-                                                Log.i("异常", e.getMessage());
-                                            }
-                                        }
-
+                                        commentPrivately(commentViews);
                                         //翻页
                                         if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
                                             if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/rw") || commentPrivatelyCount > 50) {
@@ -206,38 +180,45 @@ public class TikTokAccessibilityService extends BaseAccessibilityService {
     /**
      * 视频评论私信
      */
-    public synchronized void commentPrivately(List<AccessibilityNodeInfo> commentViews) {
+    public synchronized void commentPrivately(final List<AccessibilityNodeInfo> commentViews) {
+
         if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.COMMENT_PRIVATELY)) {
             try {
                 Thread.sleep(500);
-                for (AccessibilityNodeInfo commentView : commentViews) {
-                    try {
-                        String userName = commentView.getChild(1).getText().toString();
-                        if (Config.getInstance(this).getStatus() && !commentPrivateLetterList.contains(userName)) {
-                            Thread.sleep(1000);
-                            Log.i("私信评论：", userName);
-                            PerformClickUtils.JumpViewByViewInfo(this, commentView, "com.ss.android.ugc.aweme:id/hg", 500);
-                            if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("删除").isEmpty()) {
-                                PerformClickUtils.findTextAndClick(this, "复制");
-                            } else {
-                                PerformClickUtils.JumpViewByViewText(this, "私信回复", "com.ss.android.ugc.aweme:id/a54", 500);
-                                PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a54");
-                                Thread.sleep(500);
-                                setPrivatelyContent();
-                                getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a54").get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
-                                PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a57");
-                                commentPrivateLetterList.add(userName);
-                                commentPrivatelyCount++;
-                            }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (int i = 0; i < commentViews.size(); i++) {
+
+            }
+            for (AccessibilityNodeInfo commentView : commentViews) {
+                try {
+                    if (Config.getInstance(this).getStatus() && !commentPrivateLetterList.contains(commentView.getParent().getChild(1).getText().toString()) && commentView != null) {
+                        Thread.sleep(1000);
+                        Log.i("私信评论：", commentView.getParent().getChild(1).getText().toString());
+                        PerformClickUtils.JumpViewByViewInfo(this, commentView.getParent(), "com.ss.android.ugc.aweme:id/hg", 500);
+                        if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("删除").isEmpty()) {
+                            PerformClickUtils.findTextAndClick(this, "复制");
+                        } else {
+                            PerformClickUtils.JumpViewByViewText(this, "私信回复", "com.ss.android.ugc.aweme:id/a54", 500);
+                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a54");
+                            Thread.sleep(500);
+                            setPrivatelyContent();
+                            getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a54").get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
+                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a57");
+                            commentPrivateLetterList.add(commentView.getParent().getChild(1).getText().toString());
+                            commentPrivatelyCount++;
                         }
-                    } catch (Exception e) {
-                        Log.i("异常", e.getMessage());
+                        Thread.sleep(Config.getInstance(this).getPrivatelySpeed());
                     }
-                    Thread.sleep(Config.getInstance(this).getPrivatelySpeed());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }
+            try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                Log.i("异常", e.getMessage());
+                e.printStackTrace();
             }
 
         }

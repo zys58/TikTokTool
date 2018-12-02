@@ -156,7 +156,6 @@ public class PerformClickUtils {
      */
     public static void JumpViewByViewId(AccessibilityService accessibilityService, String fromId, String toId, long pauseTime) throws InterruptedException {
         do {
-            accessibilityService.getRootInActiveWindow().refresh();
             PerformClickUtils.findViewIdAndClick(accessibilityService, fromId);
             Thread.sleep(pauseTime);
         }
