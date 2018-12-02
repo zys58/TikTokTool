@@ -193,7 +193,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
             }
             for (AccessibilityNodeInfo commentView : commentViews) {
                 try {
-                    if (Config.getInstance(this).getStatus() && !commentPrivateLetterList.contains(commentView.getParent().getChild(1).getText().toString()) && commentView != null) {
+                    if (Config.getInstance(this).getStatus() && !commentPrivateLetterList.contains(commentView.getParent().getChild(1).getText().toString())) {
                         Thread.sleep(1000);
                         Log.i("私信评论：", commentView.getParent().getChild(1).getText().toString());
                         PerformClickUtils.JumpViewByViewInfo(this, commentView.getParent(), "com.ss.android.ugc.aweme:id/hg", 500);
