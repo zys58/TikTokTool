@@ -1,6 +1,8 @@
 package com.nice.tiktoktool;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,7 +32,7 @@ public class UserSettingActivity extends Activity {
     private TextInputEditText activationCodeEt;
     private Button activation_btn;
     private ProgressBar progressBar;
-    private TextView endTimeTv;
+    private TextView endTimeTv, checkUpdatetv;
     private ImageView settingBackBtn;
 
     /*构造一个Handler，主要作用有：1）供非UI线程发送Message  2）处理Message并完成UI更新*/
@@ -87,6 +89,7 @@ public class UserSettingActivity extends Activity {
         progressBar = findViewById(R.id.setting_progress_bar);
         endTimeTv = findViewById(R.id.end_time_tv);
         settingBackBtn = findViewById(R.id.setting_back_btn);
+        checkUpdatetv = findViewById(R.id.check_update_tv);
 
         activation_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +101,16 @@ public class UserSettingActivity extends Activity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        checkUpdatetv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "当前版本：" + ApplicationUtil.getVersionName(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                Uri uri = Uri.parse(getString(R.string.update_path));
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
         });
 

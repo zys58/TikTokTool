@@ -429,7 +429,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     @Override
     protected void onPause() {
         super.onPause();
-        Toast.makeText(this, ApplicationUtil.getVersionName(this), Toast.LENGTH_SHORT).show();
     }
 
     @Override

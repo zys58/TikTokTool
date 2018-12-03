@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="到期时间："
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/end_time_tv"
@@ -101,8 +101,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="http://t.cn/Eyw13b0"
-                    android:autoLink="all"/>
+                    android:autoLink="all"
+                    android:text="http://t.cn/Eyw13b0" />
 
             </LinearLayout>
 
@@ -110,12 +110,22 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/check_update_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_update"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="20dp"/>
+
 
     <ProgressBar
         android:id="@+id/setting_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>
