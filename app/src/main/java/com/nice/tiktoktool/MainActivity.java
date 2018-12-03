@@ -1,6 +1,5 @@
 package com.nice.tiktoktool;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
@@ -8,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -15,16 +15,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -39,8 +38,9 @@ import com.nice.config.Config;
 import com.nice.entity.ActivationCode;
 import com.nice.service.MyService;
 import com.nice.utils.AESUtils;
-import com.nice.utils.InstallationUtil;
+import com.nice.utils.ApplicationUtil;
 import com.nice.utils.JumpPermissionManagement;
+import com.nice.utils.PerformClickUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -61,9 +61,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
     private Switch openPermission, openServiceBtn;
     private Button openTiktokBtn;
-    private TextView attentionSpeedTv, privatelySpeedTv, activationStateTv1, activationStateTv2, activationEndTime;
+    private TextView attentionSpeedTv, privatelySpeedTv, activationStateTv2, activationEndTime;
     private LinearLayout attentionSetting, privatelySetting;
-    private EditText privatelyContent;
+    private TextInputEditText privatelyContent;
     private SeekBar attentionSpeedSb, privatelySpeedSb;
     private ImageView usrSettingBtn;
     private ProgressBar progressBar;
@@ -75,22 +75,32 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case 0:
+                case 200:
                     progressBar.setVisibility(View.GONE);
-                    break;
-                case 1:
-                    activationStateTv1.setTextColor(Color.GREEN);
-                    activationStateTv2.setText("已激活");
-                    activationEndTime.setText("(" + Config.getInstance(getApplicationContext()).getEndTime() + "到期)");
-                    break;
-                case 2:
                     Bundle bundle = msg.getData();
-                    Toast.makeText(getApplicationContext(), bundle.getString("msg"), Toast.LENGTH_LONG).show();
-                    activationStateTv1.setTextColor(Color.RED);
-                    activationStateTv2.setText("未激活");
+                    JSONObject data = JSONObject.parseObject(bundle.getString("data"));
+                    if (data.getInteger("code") == 0) {
+                        if (data.getInteger("valid") == 1) {
+                            ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
+                            Config.getInstance(getApplicationContext()).setActivated(true);
+                            Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
+                            Config.getInstance(getApplicationContext()).setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(activationCode.getEndTime()));
+                        } else {
+                            Config.getInstance(getApplicationContext()).setActivated(false);
+                            Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                        }
+                    } else {
+                        Config.getInstance(getApplicationContext()).setActivated(false);
+                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                    }
+                    setActiviteLogo();
                     break;
                 case 500:
+                    progressBar.setVisibility(View.GONE);
+                    Config.getInstance(getApplicationContext()).setActivated(false);
+                    Config.getInstance(getApplicationContext()).setEndTime(" - ");
                     Toast.makeText(getApplicationContext(), "连接服务器失败！", Toast.LENGTH_LONG).show();
+                    setActiviteLogo();
                     break;
                 default:
                     break;
@@ -104,7 +114,22 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //初始化ui
+        init();
 
+        adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, getSpinnerSource());
+        optionSpinner.setAdapter(adapter);
+
+        //启动悬浮窗
+        startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.SHOW));
+
+        //请求设备信息
+        requestDeviceInfo();
+
+    }
+
+    public void init() {
         openPermission = findViewById(R.id.open_permission_btn);
         openServiceBtn = findViewById(R.id.open_accessibility_btn);
         openTiktokBtn = findViewById(R.id.open_tiktok_btn);
@@ -117,21 +142,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         privatelySpeedTv = findViewById(R.id.privately_speed_tv);
         privatelySpeedSb = findViewById(R.id.privately_speed_sb);
         progressBar = findViewById(R.id.progress_bar);
-        activationStateTv1 = findViewById(R.id.activation_state_tv1);
         activationStateTv2 = findViewById(R.id.activation_state_tv2);
         activationEndTime = findViewById(R.id.activation_end_time);
         optionSpinner = findViewById(R.id.option_spinner);
 
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, getSpinnerSource());
-        optionSpinner.setAdapter(adapter);
-
         changeStatus();
+
         openServiceBtn.setOnCheckedChangeListener(this);
         openPermission.setOnCheckedChangeListener(this);
         openTiktokBtn.setOnClickListener(this);
         usrSettingBtn.setOnClickListener(this);
         optionSpinner.setOnItemSelectedListener(this);
+
         attentionSpeedSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -187,10 +209,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                 Config.getInstance(MainActivity.this).setPrivatelyContent(editable.toString());
             }
         });
-
-        //请求设备信息
-        requestDeviceInfo();
-
     }
 
     public List<String> getSpinnerSource() {
@@ -198,8 +216,26 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         list.add("关注");
         list.add("取消关注");
         list.add("私信");
-        list.add("视频评论用户私信");
+        list.add("私信评论用户");
         return list;
+    }
+
+    public void setActiviteLogo() {
+        Drawable drawable;
+        if (Config.getInstance(this).getActivated()) {
+            drawable = getResources().getDrawable(R.mipmap.activated);
+            activationStateTv2.setText("已激活");
+            activationStateTv2.setTextColor(Color.parseColor("#e91e63"));
+            activationEndTime.setText(Config.getInstance(this).getEndTime()+" 到期");
+        } else {
+            drawable = getResources().getDrawable(R.mipmap.not_active);
+            activationStateTv2.setText("未激活");
+            activationStateTv2.setTextColor(Color.GRAY);
+            activationEndTime.setText("");
+        }
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        activationStateTv2.setCompoundDrawables(drawable, null, null, null);
+
     }
 
     public void requestDeviceInfo() {
@@ -211,7 +247,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         JSONObject encryptedDataEntity = new JSONObject();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("activationCode", Config.getInstance(this).getActivationCode());
-        jsonObject.put("InstallationCode", InstallationUtil.id(this));
+        jsonObject.put("InstallationCode", ApplicationUtil.id(this));
         jsonObject.put("deviceInfo", Config.DEVICE_INFO);
         encryptedDataEntity.put("data", AESUtils.encode(jsonObject.toString()));
         //json字符串
@@ -229,65 +265,25 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i("异常返回：", "");
                 e.printStackTrace();
                 new Thread() {
                     public void run() {
-                        uiHandler.sendEmptyMessage(0);
                         uiHandler.sendEmptyMessage(500);
-                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                        Config.getInstance(getApplicationContext()).setActivated(false);
                     }
                 }.start();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                JSONObject encryptedData = JSONObject.parseObject(response.body().string());
-                final JSONObject data = JSONObject.parseObject(AESUtils.decode(encryptedData.getString("data")));
-                if (data.getInteger("code") == 0) {
-                    if (data.getInteger("valid") == 1) {
-                        ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
-                        Config.getInstance(getApplicationContext()).setActivated(true);
-                        Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
-                        Config.getInstance(getApplicationContext()).setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(activationCode.getEndTime()));
-                        new Thread() {
-                            public void run() {
-                                uiHandler.sendEmptyMessage(1);
-                            }
-                        }.start();
-                    } else {
-                        new Thread() {
-                            public void run() {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("msg", data.getString("msg"));
-
-                                Message message = new Message();
-                                message.what = 2;
-                                message.setData(bundle);
-                                uiHandler.sendMessage(message);
-                            }
-                        }.start();
-                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                        Log.i("返回：", data.getString("msg"));
-                    }
-                } else {
-                    new Thread() {
-                        public void run() {
-                            Bundle bundle = new Bundle();
-                            Log.i("返回：", data.getString("msg"));
-
-                            Message message = new Message();
-                            message.what = 2;
-                            message.setData(bundle);
-                            uiHandler.sendMessage(message);
-                        }
-                    }.start();
-                    Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                }
+                final JSONObject encryptedData = JSONObject.parseObject(response.body().string());
                 new Thread() {
                     public void run() {
-                        uiHandler.sendEmptyMessage(0);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("data", AESUtils.decode(encryptedData.getString("data")));
+                        Message message = new Message();
+                        message.what = 200;
+                        message.setData(bundle);
+                        uiHandler.sendMessage(message);
                     }
                 }.start();
             }
@@ -391,7 +387,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                 Method method = manager.getClass().getDeclaredMethod("checkOp", int.class, int.class, String.class);
                 int property = (Integer) method.invoke(manager, op,
                         Binder.getCallingUid(), context.getPackageName());
-                Log.e("399", " property: " + property);
 
                 if (AppOpsManager.MODE_ALLOWED == property) {
                     return true;
@@ -407,26 +402,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         return false;
     }
 
-    /**
-     * 判断AccessibilityService服务是否已经启动
-     *
-     * @param context
-     * @return
-     */
-    public static boolean isStartAccessibilityService(Context context) {
-        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        List<AccessibilityServiceInfo> serviceInfos = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-        for (AccessibilityServiceInfo info : serviceInfos) {
-            String id = info.getId();
-            if (id.contains("TikTokAccessibilityService")) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private void changeStatus() {
-        if (isStartAccessibilityService(this)) {
+
+        setActiviteLogo();
+
+        if (PerformClickUtils.isStartAccessibilityService(this)) {
             openServiceBtn.setChecked(true);
         } else {
             openServiceBtn.setChecked(false);
@@ -437,29 +418,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             openPermission.setChecked(false);
         }
 
-        if (Config.getInstance(this).getActivated()) {
-            activationStateTv1.setTextColor(Color.GREEN);
-            activationStateTv2.setText("已激活");
-            activationEndTime.setText("(" + Config.getInstance(this).getEndTime() + "到期)");
-        } else {
-            activationStateTv1.setTextColor(Color.RED);
-            activationStateTv2.setText("未激活");
-            activationEndTime.setText("");
-        }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         changeStatus();
-        startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.HIDE));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.SHOW));
+        Toast.makeText(this, ApplicationUtil.getVersionName(this), Toast.LENGTH_SHORT).show();
     }
 
     @Override

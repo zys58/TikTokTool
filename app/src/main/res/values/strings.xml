@@ -6,7 +6,7 @@
     <string name="open_servcie">打开服务</string>
     <string name="service_status">服务状态：</string>
     <string name="permission_status">悬浮窗权限状态：</string>
-    <string name="open_tiktok">启动</string>
+    <string name="open_tiktok">打开抖音</string>
     <string name="attention">关注</string>
     <string name="privately">私信</string>
     <string name="select_function">选择功能：</string>
@@ -17,6 +17,6 @@
     <string name="activation_code">激活码：</string>
     <string name="activation">激活</string>
     <string name="back">返回</string>
-    <string name="title_name">日天小坦克[唯一官方群:489611929]</string>
+    <string name="title_name">唯一官方群:489611929</string>
     <string name="cancel_attention">取消关注</string>
 </resources>

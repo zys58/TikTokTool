@@ -1,8 +1,11 @@
 package com.nice.utils;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.nice.config.Config;
@@ -182,5 +185,23 @@ public class PerformClickUtils {
             Thread.sleep(pauseTime);
         }
         while (accessibilityService.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(toId).isEmpty() && Config.getInstance(accessibilityService).getStatus());
+    }
+
+    /**
+     * 判断AccessibilityService服务是否已经启动
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isStartAccessibilityService(Context context) {
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> serviceInfos = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo info : serviceInfos) {
+            String id = info.getId();
+            if (id.contains("TikTokAccessibilityService")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

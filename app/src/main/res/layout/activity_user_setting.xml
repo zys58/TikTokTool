@@ -1,94 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".MainActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <RelativeLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/colorPrimary"
             android:elevation="5dp"
             android:padding="10dp">
 
-        <ImageView
+            <ImageView
                 android:id="@+id/setting_back_btn"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/back"
-                android:src="@mipmap/back"/>
+                android:src="@mipmap/back" />
 
-        <TextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="用户设置"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="15dp">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/activation_code"/>
-
-        <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-            <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/activation_code_et"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"/>
+                    android:hint="激活码"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <Button
-                    android:id="@+id/activation_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/activation"/>
+                android:id="@+id/activation_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:text="@string/activation"
+                android:textColor="@color/white" />
 
-        </LinearLayout>
 
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:orientation="horizontal">
 
-            <TextView
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="到期时间："/>
+                    android:text="到期时间："
+                    android:textColor="@color/black"/>
 
-            <TextView
+                <TextView
                     android:id="@+id/end_time_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="---"/>
+                    android:text="---" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="脚本专用抖音下载地址："
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="http://t.cn/Eyw13b0"
+                    android:autoLink="all"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <ProgressBar
-            android:id="@+id/setting_progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/setting_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

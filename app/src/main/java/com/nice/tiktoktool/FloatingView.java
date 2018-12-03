@@ -3,15 +3,17 @@ package com.nice.tiktoktool;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.nice.config.Config;
 import com.nice.service.TikTokAccessibilityService;
-
-import java.lang.reflect.Field;
 
 /**
  * 悬浮窗view

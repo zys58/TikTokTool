@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#df0064</color>
-    <color name="colorPrimaryDark">#df0064</color>
-    <color name="colorAccent">#b90b0b</color>
+    <color name="colorPrimary">#f48fb1</color>
+    <color name="colorPrimaryDark">#ec407a</color>
+    <color name="colorAccent">#e91e63</color>
     <color name="white">#ffffff</color> <!-- 白色 -->
     <color name="ivory">#fffff0</color> <!-- 象牙色 -->
     <color name="lightyellow">#ffffe0</color> <!-- 亮黄色 -->

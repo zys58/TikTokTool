@@ -1,21 +1,18 @@
 package com.nice.tiktoktool;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.format.DateUtils;
-import android.util.Log;
+import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.widget.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nice.config.Config;
 import com.nice.entity.ActivationCode;
-import com.nice.service.MyService;
 import com.nice.utils.AESUtils;
-import com.nice.utils.InstallationUtil;
+import com.nice.utils.ApplicationUtil;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -30,7 +27,7 @@ import okhttp3.Response;
 
 public class UserSettingActivity extends Activity {
 
-    private EditText activationCodeEt;
+    private TextInputEditText activationCodeEt;
     private Button activation_btn;
     private ProgressBar progressBar;
     private TextView endTimeTv;
@@ -41,19 +38,35 @@ public class UserSettingActivity extends Activity {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case 0:
+                case 200:
                     progressBar.setVisibility(View.GONE);
-                    break;
-                case 1:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_LONG).show();
-                    activationCodeEt.setText(Config.getInstance(getApplicationContext()).getActivationCode());
-                    endTimeTv.setText(Config.getInstance(getApplicationContext()).getEndTime());
-                    finish();
-                    break;
-                case 2:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_LONG).show();
+                    Bundle bundle = msg.getData();
+                    JSONObject data = JSONObject.parseObject(bundle.getString("data"));
+                    if (data.getInteger("code") == 0) {
+                        if (data.getInteger("valid") == 1) {
+                            ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
+                            Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
+                            Config.getInstance(getApplicationContext()).setActivated(true);
+                            Config.getInstance(getApplicationContext()).setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(activationCode.getEndTime()));
+                            Toast.makeText(getApplicationContext(), "激活成功!", Toast.LENGTH_LONG).show();
+                            activationCodeEt.setText(Config.getInstance(getApplicationContext()).getActivationCode());
+                            endTimeTv.setText(Config.getInstance(getApplicationContext()).getEndTime());
+                            finish();
+                        } else {
+                            Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                            Config.getInstance(getApplicationContext()).setActivated(false);
+                            activationCodeEt.setError(data.getString("msg"));
+                        }
+                    } else {
+                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                        Config.getInstance(getApplicationContext()).setActivated(false);
+                        activationCodeEt.setError(data.getString("msg"));
+                    }
                     break;
                 case 500:
+                    progressBar.setVisibility(View.GONE);
+                    Config.getInstance(getApplicationContext()).setEndTime(" - ");
+                    Config.getInstance(getApplicationContext()).setActivated(false);
                     Toast.makeText(getApplicationContext(), "连接服务器失败！", Toast.LENGTH_LONG).show();
                     break;
                 default:
@@ -101,7 +114,7 @@ public class UserSettingActivity extends Activity {
         JSONObject encryptedDataEntity = new JSONObject();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("activationCode", activationCodeEt.getText());
-        jsonObject.put("InstallationCode", InstallationUtil.id(this));
+        jsonObject.put("InstallationCode", ApplicationUtil.id(this));
         jsonObject.put("deviceInfo", Config.DEVICE_INFO);
         encryptedDataEntity.put("data", AESUtils.encode(jsonObject.toString()));
         //json字符串
@@ -119,73 +132,25 @@ public class UserSettingActivity extends Activity {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i("异常返回：", "");
                 e.printStackTrace();
                 new Thread() {
                     public void run() {
-                        uiHandler.sendEmptyMessage(0);
                         uiHandler.sendEmptyMessage(500);
-                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                        Config.getInstance(getApplicationContext()).setActivated(false);
                     }
                 }.start();
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                JSONObject encryptedData = JSONObject.parseObject(response.body().string());
-                final com.alibaba.fastjson.JSONObject data = com.alibaba.fastjson.JSONObject.parseObject(AESUtils.decode(encryptedData.getString("data")));
-                if (data.getInteger("code") == 0) {
-                    if (data.getInteger("valid") == 1) {
-                        ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
-                        Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
-                        Config.getInstance(getApplicationContext()).setActivated(true);
-                        Config.getInstance(getApplicationContext()).setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(activationCode.getEndTime()));
-                        new Thread() {
-                            public void run() {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("msg", "激活成功！");
-
-                                Message message = new Message();
-                                message.what = 1;
-                                message.setData(bundle);
-                                uiHandler.sendMessage(message);
-                            }
-                        }.start();
-                    } else {
-                        new Thread() {
-                            public void run() {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("msg", data.getString("msg"));
-
-                                Message message = new Message();
-                                message.what = 2;
-                                message.setData(bundle);
-                                uiHandler.sendMessage(message);
-                            }
-                        }.start();
-                        Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                        Config.getInstance(getApplicationContext()).setActivated(false);
-                        Log.i("返回：", data.getString("msg"));
-                    }
-                } else {
-                    new Thread() {
-                        public void run() {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("msg", data.getString("msg"));
-
-                            Message message = new Message();
-                            message.what = 2;
-                            message.setData(bundle);
-                            uiHandler.sendMessage(message);
-                        }
-                    }.start();
-                    Config.getInstance(getApplicationContext()).setEndTime(" - ");
-                    Config.getInstance(getApplicationContext()).setActivated(false);
-                }
+            public void onResponse(Call call, final Response response) throws IOException {
+                final JSONObject encryptedData = JSONObject.parseObject(response.body().string());
                 new Thread() {
                     public void run() {
-                        uiHandler.sendEmptyMessage(0);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("data", AESUtils.decode(encryptedData.getString("data")));
+                        Message message = new Message();
+                        message.what = 200;
+                        message.setData(bundle);
+                        uiHandler.sendMessage(message);
                     }
                 }.start();
             }
@@ -195,12 +160,10 @@ public class UserSettingActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.HIDE));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        startService(new Intent(this, MyService.class).putExtra(MyService.ACTION, MyService.SHOW));
     }
 }

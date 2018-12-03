@@ -1,6 +1,8 @@
 package com.nice.utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,8 +10,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.UUID;
 
-public class InstallationUtil {
-    
+public class ApplicationUtil {
+
     private static String sID = null;
     private static final String INSTALLATION = "INSTALLATION";
 
@@ -40,6 +42,17 @@ public class InstallationUtil {
         String id = UUID.randomUUID().toString();
         out.write(id.getBytes());
         out.close();
+    }
+
+    public static String getVersionName(Context context) {
+        PackageManager manager = context.getPackageManager();
+        PackageInfo info = null;
+        try {
+            info = manager.getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return info.versionName;
     }
 
 }
