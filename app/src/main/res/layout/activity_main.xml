@@ -242,6 +242,37 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="专用抖音下载地址(请先卸载原版)："
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:autoLink="all"
+                    android:text="http://t.cn/Eyw13b0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="使用多开分身请不要点击打开抖音按钮，请直接切换到分身抖音切换即可"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
             <Button
                 android:id="@+id/open_tiktok_btn"
                 android:layout_width="match_parent"

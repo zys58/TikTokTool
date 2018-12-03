@@ -86,26 +86,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="脚本专用抖音下载地址："
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:autoLink="all"
-                    android:text="http://t.cn/Eyw13b0" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>
@@ -118,7 +98,8 @@
         android:textColor="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="20dp"/>
+        android:paddingBottom="20dp"
+        android:visibility="gone"/>
 
 
     <ProgressBar

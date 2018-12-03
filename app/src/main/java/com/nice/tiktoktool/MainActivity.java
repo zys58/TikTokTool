@@ -215,8 +215,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         List<String> list = new ArrayList<>();
         list.add("关注");
         list.add("取消关注");
-        list.add("私信");
-        list.add("私信评论用户");
+        list.add("私信粉丝");
+        list.add("私信关注");
+        list.add("私信他人粉丝");
+        list.add("私信他人关注");
+//        list.add("私信评论用户");
         return list;
     }
 
@@ -226,7 +229,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             drawable = getResources().getDrawable(R.mipmap.activated);
             activationStateTv2.setText("已激活");
             activationStateTv2.setTextColor(Color.parseColor("#e91e63"));
-            activationEndTime.setText(Config.getInstance(this).getEndTime()+" 到期");
+            activationEndTime.setText(Config.getInstance(this).getEndTime() + " 到期");
         } else {
             drawable = getResources().getDrawable(R.mipmap.not_active);
             activationStateTv2.setText("未激活");
@@ -461,11 +464,32 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
         }
         if (i == 3) {
-            Config.getInstance(this).setOption(Config.COMMENT_PRIVATELY);
+            Config.getInstance(this).setOption(Config.PRIVATELY);
             attentionSetting.setVisibility(View.GONE);
             privatelySetting.setVisibility(View.VISIBLE);
+            //私信内容显示
             privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
         }
+        if (i == 4) {
+            Config.getInstance(this).setOption(Config.PRIVATELY);
+            attentionSetting.setVisibility(View.GONE);
+            privatelySetting.setVisibility(View.VISIBLE);
+            //私信内容显示
+            privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
+        }
+        if (i == 5) {
+            Config.getInstance(this).setOption(Config.PRIVATELY);
+            attentionSetting.setVisibility(View.GONE);
+            privatelySetting.setVisibility(View.VISIBLE);
+            //私信内容显示
+            privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
+        }
+//        if (i == 3) {
+//            Config.getInstance(this).setOption(Config.COMMENT_PRIVATELY);
+//            attentionSetting.setVisibility(View.GONE);
+//            privatelySetting.setVisibility(View.VISIBLE);
+//            privatelyContent.setText(Config.getInstance(this).getPrivatelyContentText());
+//        }
 
     }
 
