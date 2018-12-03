@@ -198,7 +198,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
         list.add("关注");
         list.add("取消关注");
         list.add("私信");
-//        list.add("视频评论用户私信");
+        list.add("视频评论用户私信");
         return list;
     }
 

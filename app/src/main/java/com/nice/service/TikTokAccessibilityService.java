@@ -128,13 +128,12 @@ public class TikTokAccessibilityService extends AccessibilityService {
                 } else if (Config.getInstance(this).getOption().equals(Config.COMMENT_PRIVATELY)) {
                     synchronized (TikTokAccessibilityService.class) {
                         if (!executing) {
-                            try {
-                                PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/a29", "com.ss.android.ugc.aweme:id/yd", 500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
-                            final List<AccessibilityNodeInfo> commentViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/yd");
+//                            try {
+//                                PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/a29", "com.ss.android.ugc.aweme:id/yd", 500);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+                            final List<AccessibilityNodeInfo> commentViews = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/yd");
                             if (!commentViews.isEmpty()) {
                                 new Thread(new Runnable() {
                                     @Override
@@ -180,16 +179,13 @@ public class TikTokAccessibilityService extends AccessibilityService {
     /**
      * 视频评论私信
      */
-    public synchronized void commentPrivately(final List<AccessibilityNodeInfo> commentViews) {
+    public synchronized void commentPrivately(List<AccessibilityNodeInfo> commentViews) {
 
         if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.COMMENT_PRIVATELY)) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            for (int i = 0; i < commentViews.size(); i++) {
-
             }
             for (AccessibilityNodeInfo commentView : commentViews) {
                 try {
@@ -199,6 +195,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         PerformClickUtils.JumpViewByViewInfo(this, commentView.getParent(), "com.ss.android.ugc.aweme:id/hg", 500);
                         if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("删除").isEmpty()) {
                             PerformClickUtils.findTextAndClick(this, "复制");
+                            Thread.sleep(1000);
                         } else {
                             PerformClickUtils.JumpViewByViewText(this, "私信回复", "com.ss.android.ugc.aweme:id/a54", 500);
                             PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a54");
@@ -206,6 +203,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                             setPrivatelyContent();
                             getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/a54").get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
                             PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a57");
+                            Thread.sleep(1000);
                             commentPrivateLetterList.add(commentView.getParent().getChild(1).getText().toString());
                             commentPrivatelyCount++;
                         }
