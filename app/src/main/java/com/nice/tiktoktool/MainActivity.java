@@ -13,6 +13,7 @@ import android.os.*;
 import android.provider.Settings;
 import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -72,7 +73,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                             //获得版本号
                             versionList = new ArrayList<>();
                             for (ViewId viewId : viewIds) {
-                                if (!versionList.contains(viewId.getVersion())) {
+                                if (!TextUtils.isEmpty(viewId.getVersion()) && !versionList.contains(viewId.getVersion())) {
                                     versionList.add(viewId.getVersion());
                                 }
                             }
@@ -497,12 +498,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
             Map<String, String> viewIdMap = new HashMap<>();
             for (ViewId viewId : Config.getInstance(getApplicationContext()).getViewIds()) {
                 //筛选版本
-                if (viewId.getVersion().equals(versionList.get(i))) {
+                if (versionList.get(i).equals(viewId.getVersion())) {
                     viewIdMap.put(viewId.getClickInfo(), viewId.getViewId());
                 }
             }
             Config.getInstance(getApplicationContext()).setViewIdByVersionMap(viewIdMap);
-            Toast.makeText(this, "配置版本成功", Toast.LENGTH_LONG).show();
         }
 
     }
