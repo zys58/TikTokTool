@@ -33,9 +33,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.nice.config.Config;
 import com.nice.entity.ActivationCode;
+import com.nice.entity.ViewId;
 import com.nice.service.MyService;
 import com.nice.utils.AESUtils;
 import com.nice.utils.ApplicationUtil;
@@ -46,7 +48,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -82,6 +86,14 @@ public class MainActivity extends Activity implements View.OnClickListener, Comp
                     if (data.getInteger("code") == 0) {
                         if (data.getInteger("valid") == 1) {
                             ActivationCode activationCode = JSONObject.toJavaObject(data.getJSONObject("data"), ActivationCode.class);
+                            //获得viewId信息
+                            List<ViewId> list = JSONArray.parseArray(data.getString("viewIds"), ViewId.class);
+                            Map<String, String> viewIdMap = new HashMap<>();
+                            for (ViewId viewId : list) {
+                                viewIdMap.put(viewId.getClickInfo(), viewId.getViewId());
+                            }
+                            //配置
+                            Config.getInstance(getApplicationContext()).setViewIdMap(viewIdMap);
                             Config.getInstance(getApplicationContext()).setActivated(true);
                             Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
                             Config.getInstance(getApplicationContext()).setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(activationCode.getEndTime()));
