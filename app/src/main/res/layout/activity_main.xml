@@ -185,7 +185,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
                                 android:max="30"
-                                android:progress="3" />
+                                android:progress="8" />
 
                         </LinearLayout>
 
@@ -219,7 +219,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
                                 android:max="30"
-                                android:progress="3" />
+                                android:progress="8" />
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/textinputlayout"

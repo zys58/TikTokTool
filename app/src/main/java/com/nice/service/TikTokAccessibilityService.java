@@ -15,6 +15,7 @@ import com.nice.utils.PerformClickUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class TikTokAccessibilityService extends AccessibilityService {
@@ -43,18 +44,20 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         //当没有关注才进行节点检索
                         if (!executing) {
                             AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
-                            final List<AccessibilityNodeInfo> attentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/c11");
+                            //TODO 关注/取消按钮
+                            final List<AccessibilityNodeInfo> attentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdMap().get(Config.ATTENTION_BTN));
                             if (!attentionBtns.isEmpty()) {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        executing = true;
                                         //改变当前状态为正在关注
+                                        executing = true;
                                         //循环当页已获取用户列表
                                         attention(attentionBtns);
                                         //翻页
                                         if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
-                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
+                                            //TODO 用户列表背景
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdMap().get(Config.USER_LIST_BG))) {
                                                 toast("脚本已执行完毕");
                                             }
                                         }
@@ -70,7 +73,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
                     synchronized (TikTokAccessibilityService.class) {
                         if (!executing) {
                             AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
-                            final List<AccessibilityNodeInfo> cancelAttentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/c11");
+                            //TODO 关注/取消按钮
+                            final List<AccessibilityNodeInfo> cancelAttentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdMap().get(Config.ATTENTION_BTN));
                             if (!cancelAttentionBtns.isEmpty()) {
                                 new Thread(new Runnable() {
                                     @Override
@@ -80,7 +84,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
                                         cancelAttention(cancelAttentionBtns);
                                         //翻页
                                         if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
-                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
+                                            //TODO 用户列表背景
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdMap().get(Config.USER_LIST_BG))) {
                                                 toast("脚本已执行完毕");
                                             }
                                         }
@@ -93,14 +98,15 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         }
                     }
                 } else if (Config.getInstance(this).getOption().equals(Config.PRIVATELY)) {
-                    String currentWindowActivity = event.getClassName().toString();
-                    if ("com.ss.android.ugc.aweme.main.MainActivity".equals(currentWindowActivity)) {
-                        PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a_7");
-                    }
+//                    String currentWindowActivity = event.getClassName().toString();
+//                    if ("com.ss.android.ugc.aweme.main.MainActivity".equals(currentWindowActivity)) {
+//                        PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/a_7");
+//                    }
                     synchronized (TikTokAccessibilityService.class) {
                         if (!executing) {
                             AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
-                            final List<AccessibilityNodeInfo> privatelyViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/axn");
+                            //TODO 列表用户名
+                            final List<AccessibilityNodeInfo> privatelyViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdMap().get(Config.LIST_USER_NAME));
                             if (!privatelyViews.isEmpty()) {
 
                                 new Thread(new Runnable() {
@@ -112,7 +118,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
                                         privately(privatelyViews);
                                         //翻页
                                         if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
-                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/aaz")) {
+                                            //TODO 用户列表背景
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdMap().get(Config.USER_LIST_BG))) {
                                                 toast("脚本已执行完毕");
                                             }
                                         }
@@ -207,7 +214,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                             commentPrivateLetterList.add(commentView.getParent().getChild(1).getText().toString());
                             commentPrivatelyCount++;
                         }
-                        Thread.sleep(Config.getInstance(this).getPrivatelySpeed());
+                        Thread.sleep(Config.getInstance(this).getPrivatelySpeed() + Math.round(2000 * Math.random()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -290,11 +297,11 @@ public class TikTokAccessibilityService extends AccessibilityService {
      */
     public synchronized void privately(List<AccessibilityNodeInfo> privatelyViews) {
 
-        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.PRIVATELY) && !privatelyViews.isEmpty()) {
-            PerformClickUtils.findViewIdAndClick(TikTokAccessibilityService.this, "com.ss.android.ugc.aweme:id/a_7");
+        Map<String, String> viewIdMap = Config.getInstance(this).getViewIdMap();
 
+        if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.PRIVATELY) && !privatelyViews.isEmpty()) {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -307,11 +314,14 @@ public class TikTokAccessibilityService extends AccessibilityService {
 
                         int count = 0;
                         Log.i("昵称：", info.getText().toString() + "--点击主页");
-                        PerformClickUtils.JumpViewByViewInfo(this, info, "com.ss.android.ugc.aweme:id/alv", 500);
+                        //TODO 主页右上角更多按钮
+                        PerformClickUtils.JumpViewByViewInfo(this, info, viewIdMap.get(Config.USER_HP_MORE), 500);
                         Log.i("昵称：", info.getText().toString() + "--进入更多界面");
-                        PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/alv", "com.ss.android.ugc.aweme:id/ad9", 500);
+                        //TODO 主页右上角更多按钮  更多页面对话按钮
+                        PerformClickUtils.JumpViewByViewId(this, viewIdMap.get(Config.USER_HP_MORE), viewIdMap.get(Config.MORE_TALK_BTN), 500);
                         Log.i("昵称：", info.getText().toString() + "--进入私信界面");
-                        PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/ad9", "com.ss.android.ugc.aweme:id/bcn", 500);
+                        //TODO 更多页面对话按钮 发送消息EditText
+                        PerformClickUtils.JumpViewByViewId(this, viewIdMap.get(Config.MORE_TALK_BTN), viewIdMap.get(Config.SEND_MSG_ET), 500);
 
 
                         //检测是否已经回复过
@@ -320,7 +330,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         while (!replied && Config.getInstance(this).getStatus()) {
                             setPrivatelyContent();
                             Log.i("昵称：", info.getText().toString() + "--私信");
-                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/bcn");
+                            //TODO 发送消息EditText
+                            PerformClickUtils.findViewIdAndClick(this, viewIdMap.get(Config.SEND_MSG_ET));
                             Thread.sleep(500);
                             count++;
                             if (count >= 5) {
@@ -332,7 +343,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
                             List<AccessibilityNodeInfo> bcn;
                             do {
                                 Log.i("昵称：", info.getText().toString() + "--寻找输入框");
-                                bcn = this.getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.ss.android.ugc.aweme:id/bcn");
+                                //TODO 发送消息EditText
+                                bcn = this.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(viewIdMap.get(Config.SEND_MSG_ET));
                                 Thread.sleep(500);
                                 sendCount++;
                                 if (sendCount >= 5) {
@@ -344,8 +356,8 @@ public class TikTokAccessibilityService extends AccessibilityService {
 
                             Log.i("昵称：", info.getText().toString() + "--发送私信");
                             bcn.get(0).performAction(AccessibilityNodeInfo.ACTION_PASTE);
-
-                            PerformClickUtils.findViewIdAndClick(this, "com.ss.android.ugc.aweme:id/i0");
+                            //TODO 发送按钮
+                            PerformClickUtils.findViewIdAndClick(this, viewIdMap.get(Config.SEND_MSG_BTN));
                             Thread.sleep(500);
 
                             for (String s : Config.getInstance(this).getPrivatelyContent()) {
@@ -355,11 +367,14 @@ public class TikTokAccessibilityService extends AccessibilityService {
                             }
                         }
                         Log.i("昵称：", info.getText().toString() + "--返回更多页面");
-                        PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/bcd", "com.ss.android.ugc.aweme:id/ad9", 2000);
+                        //TODO 对话界面返回按钮  更多页面对话按钮
+                        PerformClickUtils.JumpViewByViewId(this, viewIdMap.get(Config.TALK_BACK), viewIdMap.get(Config.MORE_TALK_BTN), 2000);
                         Log.i("昵称：", info.getText().toString() + "--返回主页");
-                        PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/k1", "com.ss.android.ugc.aweme:id/alv", 2000);
+                        //TODO 更多页面返回按钮  主页右上角更多按钮
+                        PerformClickUtils.JumpViewByViewId(this, viewIdMap.get(Config.MORE_BACK), viewIdMap.get(Config.USER_HP_MORE), 2000);
                         Log.i("昵称：", info.getText().toString() + "--返回列表");
-                        PerformClickUtils.JumpViewByViewId(this, "com.ss.android.ugc.aweme:id/k1", "com.ss.android.ugc.aweme:id/aaz", 2000);
+                        //TODO 主页返回按钮  用户列表背景
+                        PerformClickUtils.JumpViewByViewId(this, viewIdMap.get(Config.USER_HP_BACK), viewIdMap.get(Config.USER_LIST_BG), 2000);
 
                         //放入已私信列表
                         privateLetterList.add(info.getText().toString());

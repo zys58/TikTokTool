@@ -7,6 +7,7 @@ import android.os.Build;
 import com.nice.tiktoktool.NativeDataManager;
 
 import java.util.List;
+import java.util.Map;
 
 public class Config {
 
@@ -18,11 +19,25 @@ public class Config {
     public static final Integer CANCEL_CONCERN = 3;
     public static final Integer COMMENT_PRIVATELY = 4;
 
+    public static final String ATTENTION_BTN = "ATTENTION_BTN";
+    public static final String USER_LIST_BG = "USER_LIST_BG";
+    public static final String USER_HP_MORE = "USER_HP_MORE";
+    public static final String MORE_TALK_BTN = "MORE_TALK_BTN";
+    public static final String SEND_MSG_ET = "SEND_MSG_ET";
+    public static final String SEND_MSG_BTN = "SEND_MSG_BTN";
+    public static final String TALK_BACK = "TALK_BACK";
+    public static final String MORE_BACK = "MORE_BACK";
+    public static final String USER_HP_BACK = "USER_HP_BACK";
+    public static final String LIST_USER_NAME = "LIST_USER_NAME";
+
+
     public static final String DEVICE_INFO = Build.MANUFACTURER + "-" + Build.DEVICE + "-" + Build.VERSION.SDK_INT;
 
     private Boolean status;
     private Integer option;
     private Boolean activated;
+
+    private Map<String, String> viewIdMap;
 
     private static NativeDataManager mNativeDataManager;
 
@@ -108,5 +123,13 @@ public class Config {
 
     public void setEndTime(String activationCode) {
         mNativeDataManager.setEndTime(activationCode);
+    }
+
+    public Map<String, String> getViewIdMap() {
+        return viewIdMap;
+    }
+
+    public void setViewIdMap(Map<String, String> viewIdMap) {
+        this.viewIdMap = viewIdMap;
     }
 }

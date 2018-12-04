@@ -14,7 +14,7 @@ public class NativeDataManager {
     }
 
     public Long getAttentionSpeed() {
-        return mPreference.getLong("attentionSpeed", 3000);
+        return mPreference.getLong("attentionSpeed", 8000);
     }
 
     public void setAttentionSpeed(Long speed) {
@@ -22,7 +22,7 @@ public class NativeDataManager {
     }
 
     public Long getPrivatelySpeed() {
-        return mPreference.getLong("privatelySpeed", 3000);
+        return mPreference.getLong("privatelySpeed", 8000);
     }
 
     public void setPrivatelySpeed(Long privatelySpeed) {
