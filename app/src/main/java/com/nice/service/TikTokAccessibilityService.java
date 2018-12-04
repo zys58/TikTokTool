@@ -45,7 +45,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         if (!executing) {
                             AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
                             //TODO 关注/取消按钮
-                            final List<AccessibilityNodeInfo> attentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdMap().get(Config.ATTENTION_BTN));
+                            final List<AccessibilityNodeInfo> attentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdByVersionMap().get(Config.ATTENTION_BTN));
                             if (!attentionBtns.isEmpty()) {
                                 new Thread(new Runnable() {
                                     @Override
@@ -57,7 +57,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                                         //翻页
                                         if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
                                             //TODO 用户列表背景
-                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdMap().get(Config.USER_LIST_BG))) {
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdByVersionMap().get(Config.USER_LIST_BG))) {
                                                 toast("脚本已执行完毕");
                                             }
                                         }
@@ -74,7 +74,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         if (!executing) {
                             AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
                             //TODO 关注/取消按钮
-                            final List<AccessibilityNodeInfo> cancelAttentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdMap().get(Config.ATTENTION_BTN));
+                            final List<AccessibilityNodeInfo> cancelAttentionBtns = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdByVersionMap().get(Config.ATTENTION_BTN));
                             if (!cancelAttentionBtns.isEmpty()) {
                                 new Thread(new Runnable() {
                                     @Override
@@ -85,7 +85,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                                         //翻页
                                         if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
                                             //TODO 用户列表背景
-                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdMap().get(Config.USER_LIST_BG))) {
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdByVersionMap().get(Config.USER_LIST_BG))) {
                                                 toast("脚本已执行完毕");
                                             }
                                         }
@@ -106,7 +106,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                         if (!executing) {
                             AccessibilityNodeInfo accessibilityNodeInfo = this.getRootInActiveWindow();
                             //TODO 列表用户名
-                            final List<AccessibilityNodeInfo> privatelyViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdMap().get(Config.LIST_USER_NAME));
+                            final List<AccessibilityNodeInfo> privatelyViews = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(Config.getInstance(this).getViewIdByVersionMap().get(Config.LIST_USER_NAME));
                             if (!privatelyViews.isEmpty()) {
 
                                 new Thread(new Runnable() {
@@ -119,7 +119,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
                                         //翻页
                                         if (Config.getInstance(TikTokAccessibilityService.this).getStatus()) {
                                             //TODO 用户列表背景
-                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdMap().get(Config.USER_LIST_BG))) {
+                                            if (!PerformClickUtils.findViewIdAndScroll(TikTokAccessibilityService.this, Config.getInstance(TikTokAccessibilityService.this).getViewIdByVersionMap().get(Config.USER_LIST_BG))) {
                                                 toast("脚本已执行完毕");
                                             }
                                         }
@@ -297,7 +297,7 @@ public class TikTokAccessibilityService extends AccessibilityService {
      */
     public synchronized void privately(List<AccessibilityNodeInfo> privatelyViews) {
 
-        Map<String, String> viewIdMap = Config.getInstance(this).getViewIdMap();
+        Map<String, String> viewIdMap = Config.getInstance(this).getViewIdByVersionMap();
 
         if (Config.getInstance(this).getStatus() && Config.getInstance(this).getOption().equals(Config.PRIVATELY) && !privatelyViews.isEmpty()) {
             try {

@@ -132,9 +132,27 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tiktok_version"
+                                android:textColor="@color/black" />
+
+                        <Spinner
+                                android:id="@+id/tiktok_version_spinner"
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="15dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -143,10 +161,10 @@
                             android:textColor="@color/black" />
 
                         <Spinner
-                            android:id="@+id/option_spinner"
-                            android:layout_width="wrap_content"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"></Spinner>
+                                android:id="@+id/option_spinner"
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -250,19 +268,19 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="专用抖音下载地址(请先卸载原版)："
-                    android:textColor="@color/black" />
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:text="专用抖音下载地址(请先卸载原版)："-->
+                    <!--android:textColor="@color/black" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:autoLink="all"
-                    android:text="http://t.cn/Eyw13b0" />
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:autoLink="all"-->
+                    <!--android:text="http://t.cn/Eyw13b0" />-->
 
                 <TextView
                     android:layout_width="wrap_content"

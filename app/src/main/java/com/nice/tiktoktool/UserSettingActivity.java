@@ -60,7 +60,7 @@ public class UserSettingActivity extends Activity {
                                 viewIdMap.put(viewId.getClickInfo(), viewId.getViewId());
                             }
                             //配置
-                            Config.getInstance(getApplicationContext()).setViewIdMap(viewIdMap);
+                            Config.getInstance(getApplicationContext()).setViewIdByVersionMap(viewIdMap);
 
                             Config.getInstance(getApplicationContext()).setActivationCode(activationCode.getActivationCode());
                             Config.getInstance(getApplicationContext()).setActivated(true);

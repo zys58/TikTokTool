@@ -8,7 +8,6 @@ public class NativeDataManager {
 
     private SharedPreferences mPreference;
 
-
     public NativeDataManager(Context context) {
         mPreference = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
     }
@@ -51,5 +50,13 @@ public class NativeDataManager {
 
     public void setEndTime(String activationCode) {
         mPreference.edit().putString("endTime", activationCode).apply();
+    }
+
+    public String getTikTokVersion() {
+        return mPreference.getString("tikTokVersion", "3.4.0");
+    }
+
+    public void setTikTokVersion(String tikTokVersion) {
+        mPreference.edit().putString("tikTokVersion", tikTokVersion).apply();
     }
 }

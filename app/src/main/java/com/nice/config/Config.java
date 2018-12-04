@@ -4,6 +4,7 @@ import android.content.Context;
 
 import android.os.Build;
 
+import com.nice.entity.ViewId;
 import com.nice.tiktoktool.NativeDataManager;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class Config {
 
-//        public static final String CODE_VALIDATE_URL = "http://192.168.10.135:8088/auth/codeValidate";
+    //        public static final String CODE_VALIDATE_URL = "http://192.168.10.135:8088/auth/codeValidate";
     public static final String CODE_VALIDATE_URL = "http://tt.yl888.site:8088/auth/codeValidate";
 
     public static final Integer CONCERN = 1;
@@ -37,7 +38,8 @@ public class Config {
     private Integer option;
     private Boolean activated;
 
-    private Map<String, String> viewIdMap;
+    private Map<String, String> viewIdByVersionMap;
+    private List<ViewId> viewIds;
 
     private static NativeDataManager mNativeDataManager;
 
@@ -55,6 +57,14 @@ public class Config {
             mNativeDataManager = new NativeDataManager(context);
         }
         return instance;
+    }
+
+    public List<ViewId> getViewIds() {
+        return viewIds;
+    }
+
+    public void setViewIds(List<ViewId> viewIds) {
+        this.viewIds = viewIds;
     }
 
     public Long getAttentionSpeed() {
@@ -125,11 +135,19 @@ public class Config {
         mNativeDataManager.setEndTime(activationCode);
     }
 
-    public Map<String, String> getViewIdMap() {
-        return viewIdMap;
+    public Map<String, String> getViewIdByVersionMap() {
+        return viewIdByVersionMap;
     }
 
-    public void setViewIdMap(Map<String, String> viewIdMap) {
-        this.viewIdMap = viewIdMap;
+    public void setViewIdByVersionMap(Map<String, String> viewIdByVersionMap) {
+        this.viewIdByVersionMap = viewIdByVersionMap;
+    }
+
+    public String getTikTokVersion() {
+        return mNativeDataManager.getTikTokVersion();
+    }
+
+    public void setTikTokVersion(String tikTokVersion) {
+        mNativeDataManager.setTikTokVersion(tikTokVersion);
     }
 }
