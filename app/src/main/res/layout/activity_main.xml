@@ -1,134 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_activity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/main_activity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity">
 
     <RelativeLayout
-        android:id="@+id/title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:elevation="5dp">
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            android:elevation="5dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:text="@string/title_name"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="@string/title_name"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
         <ImageView
-            android:id="@+id/usr_setting_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@string/set_user"
-            android:padding="15dp"
-            android:src="@mipmap/user_set" />
+                android:id="@+id/usr_setting_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/set_user"
+                android:padding="15dp"
+                android:src="@mipmap/user_set"/>
 
     </RelativeLayout>
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bar">
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_below="@+id/title_bar">
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:src="@drawable/ic_launcher_foreground" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:src="@drawable/ic_launcher_foreground"/>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
 
                     <TextView
-                        android:id="@+id/activation_state_tv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@mipmap/not_active"
-                        android:text="未激活" />
+                            android:id="@+id/activation_state_tv2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@mipmap/not_active"
+                            android:text="未激活"/>
 
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/activation_end_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/colorPrimaryDark" />
+                        android:id="@+id/activation_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorPrimaryDark"/>
             </LinearLayout>
 
             <android.support.v7.widget.CardView
-                android:id="@+id/cardview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="5dp">
-
-                <LinearLayout
+                    android:id="@+id/cardview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="15dp">
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="5dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="15dp">
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/service_status"
-                            android:textColor="@color/black" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/service_status"
+                                android:textColor="@color/black"/>
 
                         <Switch
-                            android:id="@+id/open_accessibility_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true" />
+                                android:id="@+id/open_accessibility_btn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"/>
 
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/permission_status"
-                            android:textColor="@color/black" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/permission_status"
+                                android:textColor="@color/black"/>
 
                         <Switch
-                            android:id="@+id/open_permission_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true" />
+                                android:id="@+id/open_permission_btn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -140,7 +140,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/tiktok_version"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"/>
 
                         <Spinner
                                 android:id="@+id/tiktok_version_spinner"
@@ -150,15 +150,15 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/select_function"
-                            android:textColor="@color/black" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/select_function"
+                                android:textColor="@color/black"/>
 
                         <Spinner
                                 android:id="@+id/option_spinner"
@@ -168,89 +168,89 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp">
-
-                        <LinearLayout
-                            android:id="@+id/attention_setting"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:visibility="gone">
+                            android:layout_marginTop="15dp">
 
-                            <LinearLayout
+                        <LinearLayout
+                                android:id="@+id/attention_setting"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:orientation="vertical"
+                                android:visibility="gone">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                            <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/attention_speed"
-                                    android:textColor="@color/black" />
+                                    android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/attention_speed_tv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" />
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/attention_speed"
+                                        android:textColor="@color/black"/>
+
+                                <TextView
+                                        android:id="@+id/attention_speed_tv"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"/>
                             </LinearLayout>
 
 
                             <SeekBar
-                                android:id="@+id/attention_speed_sb"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:max="30"
-                                android:progress="8" />
+                                    android:id="@+id/attention_speed_sb"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:max="30"
+                                    android:progress="8"/>
 
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/privately_setting"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:visibility="gone">
-
-                            <LinearLayout
+                                android:id="@+id/privately_setting"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:orientation="vertical"
+                                android:visibility="gone">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                            <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/privately_speed"
-                                    android:textColor="@color/black" />
+                                    android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/privately_speed_tv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" />
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/privately_speed"
+                                        android:textColor="@color/black"/>
+
+                                <TextView
+                                        android:id="@+id/privately_speed_tv"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"/>
                             </LinearLayout>
 
                             <SeekBar
-                                android:id="@+id/privately_speed_sb"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:max="30"
-                                android:progress="8" />
-
-                            <android.support.design.widget.TextInputLayout
-                                android:id="@+id/textinputlayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp">
-
-                                <android.support.design.widget.TextInputEditText
-                                    android:id="@+id/privately_content"
+                                    android:id="@+id/privately_speed_sb"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="@string/privately_content"
-                                    android:inputType="textMultiLine" />
+                                    android:layout_marginTop="10dp"
+                                    android:max="30"
+                                    android:progress="8"/>
+
+                            <android.support.design.widget.TextInputLayout
+                                    android:id="@+id/textinputlayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp">
+
+                                <android.support.design.widget.TextInputEditText
+                                        android:id="@+id/privately_content"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="@string/privately_content"
+                                        android:inputType="textMultiLine"/>
 
                             </android.support.design.widget.TextInputLayout>
 
@@ -261,44 +261,44 @@
             </android.support.v7.widget.CardView>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_horizontal"-->
-                    <!--android:text="专用抖音下载地址(请先卸载原版)："-->
-                    <!--android:textColor="@color/black" />-->
-
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_horizontal"-->
-                    <!--android:autoLink="all"-->
-                    <!--android:text="http://t.cn/Eyw13b0" />-->
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="使用多开分身请不要点击打开抖音按钮，请直接切换到分身抖音切换即可"
-                    android:textColor="@color/black" />
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:text="专用抖音下载地址(请先卸载原版)："-->
+                <!--android:textColor="@color/black" />-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:autoLink="all"-->
+                <!--android:text="http://t.cn/Eyw13b0" />-->
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="使用多开分身请不要点击打开抖音按钮，直接切换到抖音分身即可"
+                        android:textColor="@color/black"/>
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/open_tiktok_btn"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:text="@string/open_tiktok"
-                android:textColor="@color/white" />
+                    android:id="@+id/open_tiktok_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:text="@string/open_tiktok"
+                    android:textColor="@color/white"/>
 
         </LinearLayout>
 
@@ -306,10 +306,10 @@
 
 
     <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
 
 </RelativeLayout>
